@@ -83,4 +83,13 @@ namespace BugTracker.ViewModels
         public string SelectedProvider { get; set; }
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
+
+    public class EditProfileViewModel
+    {
+        [Required]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "The {0} must be between {2} and {1} characters long.")]
+        [RegularExpression(@"^[a-zA-Z0-9\-.]+$", ErrorMessage = "The {0} allows only letters, numbers, '.' and '-'.")]
+        [Display(Name = "Display Name")]
+        public string DisplayName { get; set; }
+    }
 }
