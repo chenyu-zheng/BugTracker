@@ -66,7 +66,7 @@ namespace BugTracker.ViewModels
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
+        [Display(Name = "Email (Username)")]
         public string Email { get; set; }
 
         [Required]
@@ -79,6 +79,12 @@ namespace BugTracker.ViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "The {0} must be between {2} and {1} characters long.")]
+        [RegularExpression(@"^[a-zA-Z0-9\-.]+$", ErrorMessage = "The {0} allows only letters, numbers, '.' and '-'.")]
+        [Display(Name = "Display Name")]
+        public string DisplayName { get; set; }
     }
 
     public class ResetPasswordViewModel

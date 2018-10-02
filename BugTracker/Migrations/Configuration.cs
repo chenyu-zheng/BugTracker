@@ -50,9 +50,12 @@ namespace BugTracker.Migrations
             ApplicationUser adminUser = null;
             if (!context.Users.Any(p => p.UserName == "admin@bugtracker.com"))
             {
-                adminUser = new ApplicationUser();
-                adminUser.UserName = "admin@bugtracker.com";
-                adminUser.Email = "admin@bugtracker.com";
+                adminUser = new ApplicationUser
+                {
+                    UserName = "admin@bugtracker.com",
+                    Email = "admin@bugtracker.com",
+                    DisplayName = "Admin"
+                };
 
                 userManager.Create(adminUser, "bugadmin");
             }
