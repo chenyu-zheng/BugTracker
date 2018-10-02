@@ -10,10 +10,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using BugTracker.Models;
 using System.Net.Mail;
 using System.Web.Configuration;
 using System.Net;
+using BugTracker.Models;
 
 namespace BugTracker
 {

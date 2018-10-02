@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
-namespace BugTracker.Models
+namespace BugTracker.ViewModels
 {
     public class IndexViewModel
     {
