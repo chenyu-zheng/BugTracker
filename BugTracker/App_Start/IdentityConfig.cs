@@ -11,6 +11,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using BugTracker.Models;
+using System.Net.Mail;
+using System.Web.Configuration;
+using System.Net;
 
 namespace BugTracker
 {
@@ -19,7 +22,48 @@ namespace BugTracker
         public Task SendAsync(IdentityMessage message)
         {
             // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            var email = new MailMessage(
+                $"BugTracker<{WebConfigurationManager.AppSettings["emailfrom"]}>",
+                message.Destination,
+                message.Subject,
+                message.Body
+                )
+            {
+                IsBodyHtml = true
+            };
+
+            return new PersonalEmailService().SendAsync(email);
+        }
+    }
+
+    public class PersonalEmailService
+    {
+        public async Task SendAsync(MailMessage message)
+        {
+            var username = WebConfigurationManager.AppSettings["username"];
+            var password = WebConfigurationManager.AppSettings["password"];
+            var host = WebConfigurationManager.AppSettings["host"];
+            int port = Convert.ToInt32(WebConfigurationManager.AppSettings["port"]);
+            using (var smtp = new SmtpClient()
+            {
+                Host = host,
+                Port = port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(username, password)
+            })
+            {
+                try
+                {
+                    await smtp.SendMailAsync(message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    await Task.FromResult(0);
+                }
+            };
         }
     }
 
