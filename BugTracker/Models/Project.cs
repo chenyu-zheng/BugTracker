@@ -10,9 +10,14 @@ namespace BugTracker.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Identifier { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset Updated { get; set; }
-        public string CreatorId { get; set; }
-        public virtual ApplicationUser Creator { get; set; }
+        public virtual ICollection<ApplicationUser> Members { get; set; }
+
+        public Project()
+        {
+            Members = new HashSet<ApplicationUser>();
+        }
     }
 }
