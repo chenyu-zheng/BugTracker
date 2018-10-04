@@ -22,27 +22,12 @@ namespace BugTracker.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
 
-            RoleManager<IdentityRole> roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+            // Initialize Permissions
+            PermissionConfig.InitializePermissions(context);
 
-            if (!context.Roles.Any(r => r.Name == "Admin"))
-            {
-                roleManager.Create(new IdentityRole { Name = "Admin" });
-            }
+            RoleConfig.InitializeRoles(context);
 
-            if (!context.Roles.Any(r => r.Name == "Project Manager"))
-            {
-                roleManager.Create(new IdentityRole { Name = "Project Manager" });
-            }
-
-            if (!context.Roles.Any(r => r.Name == "Developer"))
-            {
-                roleManager.Create(new IdentityRole { Name = "Developer" });
-            }
-
-            if (!context.Roles.Any(r => r.Name == "Submitter"))
-            {
-                roleManager.Create(new IdentityRole { Name = "Submitter" });
-            }
+            RoleConfig.InitializeRolePermissions(context);
 
 
             UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));

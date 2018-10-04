@@ -39,7 +39,8 @@ namespace BugTracker.Models
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-
+        public DbSet<Permission> Permissions { get; set; }
+        public new DbSet<ApplicationRole> Roles { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

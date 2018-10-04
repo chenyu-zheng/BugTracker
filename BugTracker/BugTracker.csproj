@@ -189,6 +189,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\PermissionAuthorizeAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -201,14 +202,18 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\PermissionConfig.cs" />
+    <Compile Include="Migrations\RoleConfig.cs" />
+    <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\Extensions\IdentityExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\TicketRevisionDetail.cs" />
     <Compile Include="Models\Ticket.cs" />
-    <Compile Include="Models\TicketAttachment.cs" />
+    <Compile Include="Models\Attachment.cs" />
     <Compile Include="Models\TicketCategory.cs" />
-    <Compile Include="Models\TicketComment.cs" />
+    <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\TicketRevision.cs" />
     <Compile Include="Models\TicketPriority.cs" />
     <Compile Include="Models\TicketStatus.cs" />
