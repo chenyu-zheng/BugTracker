@@ -17,6 +17,20 @@ namespace BugTracker.ActionFilters
             _permissions = permissions;
         }
 
+        public override void OnAuthorization(AuthorizationContext context)
+        {
+            if (context.ActionDescriptor.ControllerDescriptor.ControllerName == "Projects")
+            {
+                
+            }
+
+            if (_permissions.Contains("View Own Projects"))
+            {
+                //context.HttpContext.Request[""]
+            }
+          
+        }
+
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             var db = new ApplicationDbContext();

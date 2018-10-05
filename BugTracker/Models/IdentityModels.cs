@@ -22,6 +22,7 @@ namespace BugTracker.Models
         {
             Projects = new HashSet<Project>();
             Tickets = new HashSet<Ticket>();
+            AssignedTickets = new HashSet<Ticket>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
