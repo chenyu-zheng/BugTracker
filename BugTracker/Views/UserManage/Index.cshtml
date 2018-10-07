@@ -1,0 +1,80 @@
+﻿@model IEnumerable<BugTracker.ViewModels.UserRoleViewModel>
+@{
+    ViewBag.Title = "ChangeUserRole";
+}
+
+<h2>ChangeUserRole</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(m => m.DisplayName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Email)
+            </th>
+            @foreach (var item in ViewBag.Roles)
+            {
+                <th>
+                    @item
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => item.DisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Email)
+                </td>
+                @foreach (var role in item.Roles)
+                {
+                    <td>
+                        @Html.CheckBoxFor(m => role.Value, htmlAttributes : new { onclick = "return false;"})
+                    </td>
+                }
+                <td>
+                    @Html.ActionLink("Edit Role", "ChangeUserRole", new { id = item.Id } )
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+@*<div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.DisplayName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

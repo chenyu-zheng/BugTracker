@@ -1,0 +1,53 @@
+﻿@model BugTracker.ViewModels.UserRoleViewModel
+@{
+    ViewBag.Title = "ChangeUserRole";
+}
+
+<h2>ChangeUserRole</h2>
+
+@using (Html.BeginForm("ChangeUserRole", "UserManage", FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Id)
+
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(m => m.DisplayName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.Email)
+                </th>
+                @foreach (var item in Model.Roles)
+                {
+                    <th>
+                        @item.Key
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => m.DisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => m.Email)
+                </td>
+                @foreach (var item in Model.Roles)
+                {
+                    <td>
+                        @Html.CheckBoxFor(m => m.Roles[item.Key])
+                    </td>
+                }
+                <td>
+                    <input type="submit" class="btn btn-default" value="Submit Changes" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

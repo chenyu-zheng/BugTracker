@@ -30,7 +30,7 @@ namespace BugTracker.Migrations
             RoleConfig.InitializeRolePermissions(context);
 
 
-            UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+            ApplicationUserManager userManager = new ApplicationUserManager(new ApplicationUserStore(context));
 
             ApplicationUser adminUser = null;
             if (!context.Users.Any(p => p.UserName == "admin@bugtracker.com"))

@@ -25,7 +25,7 @@ namespace BugTracker.Models
             AssignedTickets = new HashSet<Ticket>();
         }
 
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
@@ -36,15 +36,14 @@ namespace BugTracker.Models
         }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserLogin, IdentityUserRole, IdentityUserClaim>
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Permission> Permissions { get; set; }
-        public new DbSet<ApplicationRole> Roles { get; set; }
 
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DefaultConnection")
         {
         }
 

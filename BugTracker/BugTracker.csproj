@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ProjectsController.cs" />
+    <Compile Include="Controllers\UserManageController.cs" />
     <Compile Include="Filters\PermissionAuthorizeAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\UserManageHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\PermissionConfig.cs" />
     <Compile Include="Migrations\RoleConfig.cs" />
@@ -222,6 +224,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
+    <Compile Include="ViewModels\UserManageViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -289,6 +292,8 @@
     <Content Include="Views\Projects\Details.cshtml" />
     <Content Include="Views\Projects\Edit.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\UserManage\Index.cshtml" />
+    <Content Include="Views\UserManage\ChangeUserRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
