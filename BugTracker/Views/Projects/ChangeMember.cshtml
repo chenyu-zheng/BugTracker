@@ -1,0 +1,76 @@
+﻿@model BugTracker.ViewModels.ChangeMemberViewModel
+@{
+    ViewBag.Title = "ChangeMember";
+}
+
+<h2>@Html.DisplayFor(m => m.Project.Name)</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @Html.DisplayNameFor(m => m.Members)
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().DisplayName)</th>
+                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().UserName)</th>
+                                <th>&emsp;&emsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Members)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(m => item.DisplayName)</td>
+                                    <td>@Html.DisplayFor(m => item.UserName)</td>
+                                    <td>@Html.ActionLink("Remove", "RemoveMember", new { projectId = Model.Project.Id, userId = item.Id })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @Html.DisplayNameFor(m => m.Users)
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().DisplayName)</th>
+                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().UserName)</th>
+                                <th>&emsp;&emsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Users)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(m => item.DisplayName)</td>
+                                    <td>@Html.DisplayFor(m => item.UserName)</td>
+                                    <td>@Html.ActionLink("Add", "AddMember", new { projectId = Model.Project.Id, userId = item.Id })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+</div>

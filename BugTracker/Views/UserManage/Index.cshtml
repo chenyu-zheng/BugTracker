@@ -12,7 +12,7 @@
                 @Html.DisplayNameFor(m => m.DisplayName)
             </th>
             <th>
-                @Html.DisplayNameFor(m => m.Email)
+                @Html.DisplayNameFor(m => m.UserName)
             </th>
             @foreach (var item in ViewBag.Roles)
             {
@@ -30,7 +30,7 @@
                     @Html.DisplayFor(m => item.DisplayName)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => item.Email)
+                    @Html.DisplayFor(m => item.UserName)
                 </td>
                 @foreach (var role in item.Roles)
                 {

@@ -31,14 +31,14 @@ namespace BugTracker.Controllers
                 .Select(p => new UserRoleViewModel
                 {
                     Id = p.Id,
-                    Email = p.Email,
+                    UserName = p.UserName,
                     DisplayName = p.DisplayName,
                 })
                 .ToList();
 
-            var help = new UserManageHelper(userManager, roleManager);
+            var helper = new UserManageHelper(userManager, roleManager);
 
-            model.ForEach(p => p.Roles = help.RoleDictionary(p.Id));
+            model.ForEach(p => p.Roles = helper.RoleDictionary(p.Id));
 
             ViewBag.Roles = roleManager.Roles.Select(r => r.Name).ToList();
 
@@ -61,7 +61,7 @@ namespace BugTracker.Controllers
                 .Select(p => new UserRoleViewModel
                 {
                     Id = p.Id,
-                    Email = p.Email,
+                    UserName = p.UserName,
                     DisplayName = p.DisplayName
                 })
                 .FirstOrDefault();

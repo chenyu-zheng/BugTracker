@@ -19,15 +19,22 @@ namespace BugTracker.ActionFilters
 
         public override void OnAuthorization(AuthorizationContext context)
         {
-            if (context.ActionDescriptor.ControllerDescriptor.ControllerName == "Projects")
-            {
+            var controllerName = context.ActionDescriptor.ControllerDescriptor.ControllerName;
+            var actionName = context.ActionDescriptor.ActionName;
+            //context.HttpContext.Request["id"]
+
+            //if (_permissions.Contains(getPermissionNameFromConfig(controllerName, actionName)))
+            //{
                 
-            }
+            //}
+
+                 
 
             if (_permissions.Contains("View Own Projects"))
             {
                 //context.HttpContext.Request[""]
             }
+
           
         }
 

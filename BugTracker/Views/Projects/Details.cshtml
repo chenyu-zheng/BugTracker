@@ -1,4 +1,4 @@
-﻿@model BugTracker.Models.Project
+﻿@model BugTracker.ViewModels.ProjectViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -23,7 +23,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.Raw(Model.Description)
         </dd>
 
         <dt>
