@@ -13,7 +13,6 @@ using BugTracker.ViewModels;
 
 namespace BugTracker.Controllers
 {
-    [Authorize]
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -67,6 +66,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
+        [PermissionAuthorize("Create Projects")]
         public ActionResult Create()
         {
             return View();
@@ -104,6 +104,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Edit/5
+        [PermissionAuthorize("Edit Projects")]
         public ActionResult Edit(int? id)
         {
             if (id == null)

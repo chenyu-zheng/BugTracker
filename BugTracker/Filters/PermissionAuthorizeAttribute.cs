@@ -19,23 +19,21 @@ namespace BugTracker.ActionFilters
 
         public override void OnAuthorization(AuthorizationContext context)
         {
-            var controllerName = context.ActionDescriptor.ControllerDescriptor.ControllerName;
-            var actionName = context.ActionDescriptor.ActionName;
+            //var controllerName = context.ActionDescriptor.ControllerDescriptor.ControllerName;
+            //var actionName = context.ActionDescriptor.ActionName;
             //context.HttpContext.Request["id"]
 
-            //if (_permissions.Contains(getPermissionNameFromConfig(controllerName, actionName)))
-            //{
-                
-            //}
-
-                 
-
-            if (_permissions.Contains("View Own Projects"))
+            if (!AuthorizeCore(context.HttpContext))
             {
-                //context.HttpContext.Request[""]
+                context.Result = new RedirectToRouteResult(
+                    new System.Web.Routing.RouteValueDictionary(
+                        new
+                        {
+                            controller = "Account",
+                            action = "Login"
+                        })
+                    );
             }
-
-          
         }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
