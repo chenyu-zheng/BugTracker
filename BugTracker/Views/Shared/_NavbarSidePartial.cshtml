@@ -22,15 +22,20 @@
     @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
     {
         <li>
-            <a href=@Url.Action("Index", "Projects")>
+            <a href=@Url.Action("AllProjects", "Projects")>
                 <i class="fas fa-folder-open fa-fw"></i> All Projects
             </a>
         </li>
     }
-    <li>
-        <a href="#">
-            <i class="fas fa-folder fa-fw"></i> My Projects
-        </a>
-    </li>
- 
-</ul>
+    @if (User.IsInRole("Admin") || 
+        User.IsInRole("Project Manager") || 
+        User.IsInRole("Developer") || 
+        User.IsInRole("Submitter"))
+    {
+        <li>
+            <a href=@Url.Action("OwnProjects", "Projects")>
+                <i class="fas fa-folder fa-fw"></i> My Projects
+            </a>
+        </li>
+    }
+    </ul>

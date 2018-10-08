@@ -1,58 +1,61 @@
 ﻿@model BugTracker.ViewModels.ProjectViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Project Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.Raw(Model.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Identifier)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Identifier)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
-
-    </dl>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">@ViewBag.Title</h1>
+    </div>
+    <!-- /.col-lg-12 -->
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @Html.DisplayFor(m => m.Name)
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <p>
+                    @Html.Raw(Model.Description)
+                </p>
+                <p>
+                    <i class="fas fa-user-friends orange"></i>&nbsp;
+                    @Html.DisplayNameFor(m => m.NumberOfMembers)
+                    @Html.DisplayFor(m => m.NumberOfMembers)
+                    &emsp;
+                    <i class="fas fa-file-alt red"></i>&nbsp;
+                    @Html.DisplayNameFor(m => m.NumberOfTickets)
+                    @Html.DisplayFor(m => m.NumberOfTickets)
+                </p>
+                <hr />
+
+                @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                {
+                    <a href=@Url.Action("Edit", new { id = Model.Id}) title="Edit Project">
+                        <i class="fas fa-edit fa-fw"></i> Edit
+                    </a>
+                    @Html.Raw("&emsp;")
+                    <a href=@Url.Action("ChangeMember", new { id = Model.Id}) title="Edit Members">
+                        <i class="fas fa-user-friends fa-fw"></i> Members
+                    </a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    @Html.Raw("&emsp;")
+                    <a href=@Url.Action("Delete", new { id = Model.Id}) title="Delete Project">
+                        <i class="fas fa-trash-alt fa-fw"></i> Delete
+                    </a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

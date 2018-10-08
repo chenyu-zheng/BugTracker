@@ -8,26 +8,15 @@ namespace BugTracker.Migrations
 {
     public class PermissionConfig
     {
-        public static IReadOnlyList<string> Permissions = new List<string>
+        public static void InitializePermissions(ApplicationDbContext context, IEnumerable<string> permissions)
         {
-            "Edit User Roles",
-            "View All Projects",
-            "View Own Projects",
-            "Create Projects",
-            "Edit All Projects",
-            "Edit Own Projects"
-        };
-
-        public static void InitializePermissions(ApplicationDbContext context)
-        {
-            foreach(string item in Permissions)
+            foreach (string item in permissions)
             {
                 if (!context.Permissions.Any(p => p.Name == item))
                 {
                     context.Permissions.Add(new Permission { Name = item });
                 }
             }
-
             context.SaveChanges();
         }
     }

@@ -8,8 +8,10 @@ using System.Web;
 using System.Web.Mvc;
 using BlogApp.Helpers;
 using BugTracker.ActionFilters;
+using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.ViewModels;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
@@ -17,10 +19,15 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Projects
-        public ActionResult Index()
+        [PermissionAuthorize("View All Projects")]
+        public ActionResult AllProjects(bool? archived)
         {
-            var model = db.Projects
+            var query = db.Projects.AsQueryable();
+            if (archived != null)
+            {
+                query = query.Where(p => p.Archived == archived);
+            }
+            var model = query
                 .Select(p => new ProjectViewModel
                 {
                     Id = p.Id,
@@ -31,20 +38,54 @@ namespace BugTracker.Controllers
                     Updated = p.Updated,
                     NumberOfMembers = p.Members.Count(),
                     NumberOfTickets = p.Tickets.Count()
-                })
-                .ToList();
-            return View(model);
+                }).ToList();
+            ViewBag.Type = "All";
+            return View("List", model);
+        }
+
+        [PermissionAuthorize("View Own Projects, View All Projects")]
+        public ActionResult OwnProjects(bool? archived)
+        {
+            var userId = User.Identity.GetUserId();
+            var query = db.Projects
+                .Where(p => p.Members.Any(m => m.Id == userId))
+                .AsQueryable();
+            if (archived != null)
+            {
+                query = query.Where(p => p.Archived == archived);
+            }
+            var model = query
+                .Select(p => new ProjectViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Identifier = p.Identifier,
+                    Created = p.Created,
+                    Updated = p.Updated,
+                    NumberOfMembers = p.Members.Count(),
+                    NumberOfTickets = p.Tickets.Count()
+                }).ToList();
+            ViewBag.Type = "My";
+            return View("List", model);
         }
 
         // GET: Projects/Details/5
+        [PermissionAuthorize("View Own Projects, View All Projects")]
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            var model = db.Projects
+            var query = db.Projects.AsQueryable();
+            var userId = User.Identity.GetUserId();
+            if (!new UserManageHelper().HasPermission(userId, "View All Projects"))
+            {
+                query = query.Where(p => p.Members.Any(m => m.Id == userId));
+            }
+            
+            var model = query
                 .Select(p => new ProjectViewModel
                 {
                     Id = p.Id,
@@ -94,24 +135,27 @@ namespace BugTracker.Controllers
                     return View(project);
                 }
                 project.Identifier = identifier;
+                project.Archived = false;
 
                 db.Projects.Add(project);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("AllProjects");
             }
 
             return View(project);
         }
 
         // GET: Projects/Edit/5
-        [PermissionAuthorize("Edit Projects")]
+        [PermissionAuthorize("Edit All Projects")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Project project = db.Projects.Find(id);
+            Project project = db.Projects
+                .Where(p => p.Id == id || p.Archived == false)
+                .FirstOrDefault();
             if (project == null)
             {
                 return HttpNotFound();
@@ -124,12 +168,13 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Edit All Projects")]
         public ActionResult Edit([Bind(Include = "Id,Name,Description")] Project project)
         {
             if (ModelState.IsValid)
             {
                 Project op = db.Projects.Where(p => p.Id == project.Id).FirstOrDefault();
-                if (op == null)
+                if (op == null || op.Archived)
                 {
                     return HttpNotFound();
                 }
@@ -148,19 +193,20 @@ namespace BugTracker.Controllers
                         return View(project);
                     }
                     op.Identifier = identifier;
-                }
-                op.Name = project.Name;
+                    op.Name = project.Name;
+                }                
                 op.Description = project.Description;
                 op.Updated = DateTime.Now;
 
                 db.Entry(op).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = project.Id});
             }
             return View(project);
         }
 
         // GET: Projects/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -192,14 +238,16 @@ namespace BugTracker.Controllers
         // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             Project project = db.Projects.Find(id);
             db.Projects.Remove(project);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("AllProjects");
         }
 
+        [PermissionAuthorize("Assign All Projects")]
         public ActionResult ChangeMember(int? id)
         {
             if (id == null)
@@ -249,6 +297,7 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+        [PermissionAuthorize("Assign All Projects")]
         public ActionResult AddMember(int projectId, string userId)
         {
             var project = db.Projects.
@@ -275,6 +324,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("ChangeMember", new { id = projectId });
         }
 
+        [PermissionAuthorize("Assign All Projects")]
         public ActionResult RemoveMember(int projectId, string userId)
         {
             var project = db.Projects.

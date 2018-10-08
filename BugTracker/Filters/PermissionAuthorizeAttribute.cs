@@ -1,4 +1,5 @@
-﻿using BugTracker.Models;
+﻿using BugTracker.Helpers;
+using BugTracker.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -10,18 +11,17 @@ namespace BugTracker.ActionFilters
 {
     public class PermissionAuthorizeAttribute : AuthorizeAttribute
     {
-        private string _permissions;
+        private List<string> _permissions;
 
         public PermissionAuthorizeAttribute(string permissions)
         {
-            _permissions = permissions;
+            _permissions = permissions.Split(',').Select(p => p.Trim()).ToList();
         }
 
         public override void OnAuthorization(AuthorizationContext context)
         {
-            //var controllerName = context.ActionDescriptor.ControllerDescriptor.ControllerName;
-            //var actionName = context.ActionDescriptor.ActionName;
-            //context.HttpContext.Request["id"]
+
+            //var param = context.RouteData.Values["id"];
 
             if (!AuthorizeCore(context.HttpContext))
             {
@@ -38,16 +38,18 @@ namespace BugTracker.ActionFilters
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            var db = new ApplicationDbContext();
-            var allowedRoles = db.Roles
-                .Where(r => r.Permissions
-                    .Any(p => _permissions.Contains(p.Name))
-                )
-                .Select(r => r.Name);
+            var helper = new UserManageHelper();
 
-            Roles = string.Join(",", allowedRoles);
+            var userId = httpContext.User.Identity.GetUserId();
 
-            return base.AuthorizeCore(httpContext);
+            foreach(var p in _permissions)
+            {
+                if (helper.HasPermission(userId, p))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }

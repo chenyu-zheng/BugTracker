@@ -10,19 +10,13 @@ namespace BugTracker.Migrations
 {
     public class RoleConfig
     {
-        public static IReadOnlyList<string> Roles = new List<string>
-        {
-            "Admin",
-            "Project Manager",
-            "Developer",
-            "Submitter"
-        };
+        
 
-        public static void InitializeRoles(ApplicationDbContext context)
+        public static void InitializeRoles(ApplicationDbContext context, IEnumerable<string> roles)
         {
             var roleManager = new ApplicationRoleManager(new RoleStore<ApplicationRole>(context));
 
-            foreach (string item in Roles)
+            foreach (string item in roles)
             {
                 if (!context.Roles.Any(r => r.Name == item))
                 {
@@ -31,17 +25,23 @@ namespace BugTracker.Migrations
             }
         }
 
-        public static void InitializeRolePermissions(ApplicationDbContext context)
+        public static void InitializeRolePermissions(ApplicationDbContext context, IReadOnlyDictionary<string, IReadOnlyList<string>> rolePermissions)
         {
-            foreach (string item in PermissionConfig.Permissions)
+            foreach(var item in rolePermissions)
             {
-                var adminRole = context.Roles.Where(r => r.Name == "Admin").FirstOrDefault();
+                var role = context.Roles
+                    .FirstOrDefault(r => r.Name == item.Key);
 
-                var permission = context.Permissions.Where(p => p.Name == item).FirstOrDefault();
+                var permissions = context.Permissions
+                    .Where(p => item.Value.Contains(p.Name))
+                    .ToList();
 
-                if (!adminRole.Permissions.Any(p => p.Name == permission.Name))
+                foreach (var permission in permissions)
                 {
-                    adminRole.Permissions.Add(permission);
+                    if (!role.Permissions.Any(p => p.Id == permission.Id))
+                    {
+                        role.Permissions.Add(permission);
+                    }
                 }
             }
 

@@ -46,6 +46,10 @@ td.edit {
     min-width: 120px;
 }
 
+.float-right {
+    float: right;
+}
+
 label.role-checkbox + .checkbox-inline {
     margin-left: 0;
     margin-right: 10px;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -13,7 +14,10 @@ namespace BugTracker.ViewModels
         public string Identifier { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }
+        public bool Archived { get; set; }
+        [Display(Name = "Members")]
         public int NumberOfMembers { get; set; }
+        [Display(Name = "Tickets")]
         public int NumberOfTickets { get; set; }
     }
 

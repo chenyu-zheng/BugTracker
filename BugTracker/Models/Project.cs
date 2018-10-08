@@ -21,6 +21,7 @@ namespace BugTracker.Models
         public string Identifier { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }
+        public bool Archived { get; set; }
         public virtual ICollection<ApplicationUser> Members { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; }
 
