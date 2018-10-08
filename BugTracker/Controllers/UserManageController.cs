@@ -1,5 +1,7 @@
-﻿using BugTracker.Helpers;
+﻿using BugTracker.ActionFilters;
+using BugTracker.Helpers;
 using BugTracker.Models;
+using BugTracker.Models.Extensions;
 using BugTracker.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -12,7 +14,6 @@ using System.Web.Mvc;
 
 namespace BugTracker.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class UserManageController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -25,6 +26,7 @@ namespace BugTracker.Controllers
             roleManager = new ApplicationRoleManager(new RoleStore<ApplicationRole>(db));
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var model = userManager.Users
@@ -45,6 +47,7 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+        [PermissionAuthorize("Edit User Roles")]
         public ActionResult ChangeUserRole(string id)
         {
             if (!ModelState.IsValid)
@@ -73,6 +76,7 @@ namespace BugTracker.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize("Edit User Roles")]
         public ActionResult ChangeUserRole(UserRoleViewModel model)
         {
             var user = userManager.FindById(model.Id);
@@ -82,7 +86,7 @@ namespace BugTracker.Controllers
             }
 
             userManager.RemoveFromRoles(
-                model.Id, 
+                model.Id,
                 userManager.GetRoles(model.Id).ToArray()
                 );
 
@@ -96,8 +100,32 @@ namespace BugTracker.Controllers
                 var singnInManager = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
                 singnInManager.SignIn(user, isPersistent: false, rememberBrowser: false);
             }
-            
+
             return RedirectToAction("Index");
+        }
+
+        public ActionResult MyProfile()
+        {
+            var userId = User.Identity.GetUserId();
+            var model = userManager.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserProfileViewModel
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    DisplayName = u.DisplayName,
+                    Email = u.Email,
+                    AssignedProjects = u.Projects.Count(),
+                    CreatedTickets = u.Tickets.Count(),
+                    AssignedTickets = u.AssignedTickets.Count()
+                })
+                .FirstOrDefault();
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+            model.Roles = userManager.GetRoles(userId).ToList();
+            return View("UserProfile", model);
         }
 
         protected override void Dispose(bool disposing)

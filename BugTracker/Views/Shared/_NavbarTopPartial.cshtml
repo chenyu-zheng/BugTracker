@@ -199,10 +199,14 @@
         {
             <ul class="dropdown-menu dropdown-user">
                 <li>
-                    <a><i class="fas fa-user fa-fw"></i>&nbsp;@User.Identity.GetDisplayName()</a>
+                    <a href=@Url.Action("MyProfile", "UserManage")>
+                        <i class="fas fa-user fa-fw"></i>&nbsp;@User.Identity.GetDisplayName()
+                    </a>
                 </li>
                 <li>
-                    <a href=@Url.Action("Index", "Manage")><i class="fas fa-cog fa-fw"></i>&nbsp;Settings</a>
+                    <a href=@Url.Action("Index", "Manage")>
+                        <i class="fas fa-cog fa-fw"></i>&nbsp;Settings
+                    </a>
                 </li>
                 <li class="divider"></li>
                 <li>

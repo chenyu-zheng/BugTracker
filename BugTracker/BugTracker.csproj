@@ -500,6 +500,7 @@
     <Content Include="Views\Shared\_NavbarTopPartial.cshtml" />
     <Content Include="Views\Shared\_NavbarSidePartial.cshtml" />
     <Content Include="Scripts\metisMenu.js.map" />
+    <Content Include="Views\UserManage\UserProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

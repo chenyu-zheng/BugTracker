@@ -19,4 +19,16 @@ namespace BugTracker.ViewModels
     {
         public Dictionary<string, bool> Roles { get; set; }
     }
+
+    public class UserProfileViewModel : UserViewModel
+    {
+        public string Email { get; set; }
+        public List<string> Roles { get; set; }
+        [Display(Name = "Assigned Projects")]
+        public int AssignedProjects { get; set; }
+        [Display(Name = "Created Tickets")]
+        public int CreatedTickets { get; set; }
+        [Display(Name = "Assigned Tickets")]
+        public int AssignedTickets { get; set; }
+    }
 }
