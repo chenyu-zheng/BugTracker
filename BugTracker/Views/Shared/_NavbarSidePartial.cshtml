@@ -1,0 +1,36 @@
+﻿<ul class="nav" id="side-menu">
+    <li class="sidebar-search">
+        <div class="input-group custom-search-form">
+            <input type="text" class="form-control" placeholder="Search...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+        </div>
+        <!-- /input-group -->
+    </li>
+    <li>
+        <a href=@Url.Action("Index", "Home")><i class="fas fa-tachometer-alt fa-fw"></i> Dashboard</a>
+    </li>
+    @if (User.IsInRole("Admin"))
+    {
+        <li>
+            <a href=@Url.Action("Index", "UserManage")><i class="fas fa-user-cog fa-fw"></i> Manage Users</a>
+        </li>
+    }
+    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+    {
+        <li>
+            <a href=@Url.Action("Index", "Projects")>
+                <i class="fas fa-folder-open fa-fw"></i> All Projects
+            </a>
+        </li>
+    }
+    <li>
+        <a href="#">
+            <i class="fas fa-folder fa-fw"></i> My Projects
+        </a>
+    </li>
+ 
+</ul>

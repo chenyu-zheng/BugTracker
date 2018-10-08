@@ -22,8 +22,21 @@ namespace BugTracker
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/sb-admin-2").Include(
+                        "~/Scripts/sb-admin-2.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/metisMenu").Include(
+                        "~/Scripts/metisMenu.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/tinymce").Include(
+                        "~/Scripts/tinymce/tinymce.js",
+                        "~/Scripts/tinymce/jquery.tinymce.min.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/all.css",
+                      "~/Content/metisMenu.css",
+                      "~/Content/sb-admin-2.css",
                       "~/Content/site.css"));
         }
     }
