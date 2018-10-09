@@ -382,7 +382,7 @@ namespace BugTracker.Controllers
 
             IdentityResult result;
 
-            if (UserManager.Users.Any(u => u.DisplayName == model.DisplayName))
+            if (UserManager.Users.Any(u => u.DisplayName == model.DisplayName && u.Id != user.Id))
             {
                 result = new IdentityResult($"Display Name '{model.DisplayName}' is already taken.");
             }
