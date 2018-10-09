@@ -84,6 +84,15 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
+            var selfId = User.Identity.GetUserId();
+            if (selfId == model.Id &&
+                User.IsInRole("Admin") &&
+                !model.Roles["Admin"]
+                )
+            {
+                ModelState.AddModelError("", "Admin cannot dissociate Admin role from themself.");
+                return View(model);
+            }
 
             userManager.RemoveFromRoles(
                 model.Id,
