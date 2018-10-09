@@ -356,14 +356,22 @@ namespace BugTracker.Controllers
                 return View("Error");
             }
 
-            user.DisplayName = model.DisplayName;
-            var result = await UserManager.UpdateAsync(user);
-            if (result.Succeeded)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                return RedirectToAction("Index", new { Message = ManageMessageId.EditProfileSuccess });
-            }
+            IdentityResult result;
 
+            if (UserManager.Users.Any(u => u.DisplayName == model.DisplayName))
+            {
+                result = new IdentityResult($"Display Name '{model.DisplayName}' is already taken.");
+            }
+            else
+            {
+                user.DisplayName = model.DisplayName;
+                result = await UserManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    return RedirectToAction("Index", new { Message = ManageMessageId.EditProfileSuccess });
+                }
+            }
             AddErrors(result);
             return View(model);
         }
