@@ -104,30 +104,6 @@ namespace BugTracker.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult MyProfile()
-        {
-            var userId = User.Identity.GetUserId();
-            var model = userManager.Users
-                .Where(u => u.Id == userId)
-                .Select(u => new UserProfileViewModel
-                {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    DisplayName = u.DisplayName,
-                    Email = u.Email,
-                    AssignedProjects = u.Projects.Count(),
-                    CreatedTickets = u.Tickets.Count(),
-                    AssignedTickets = u.AssignedTickets.Count()
-                })
-                .FirstOrDefault();
-            if (model == null)
-            {
-                return HttpNotFound();
-            }
-            model.Roles = userManager.GetRoles(userId).ToList();
-            return View("UserProfile", model);
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

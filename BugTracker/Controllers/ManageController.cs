@@ -323,6 +323,30 @@ namespace BugTracker.Controllers
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
         }
 
+        public ActionResult MyProfile()
+        {
+            var userId = User.Identity.GetUserId();
+            var model = UserManager.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserProfileViewModel
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    DisplayName = u.DisplayName,
+                    Email = u.Email,
+                    AssignedProjects = u.Projects.Count(),
+                    CreatedTickets = u.Tickets.Count(),
+                    AssignedTickets = u.AssignedTickets.Count()
+                })
+                .FirstOrDefault();
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+            model.Roles = UserManager.GetRoles(userId).ToList();
+            return View("MyProfile", model);
+        }
+
         //
         // GET: /Manage/EditProfile
         public async Task<ActionResult> EditProfile()

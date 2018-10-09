@@ -59,7 +59,7 @@
                 <hr />
                 @if (User.Identity.Name == Model.UserName)
                 {
-                    <a href=@Url.Action("EditProfile", "Manage") title="Edit Profile">
+                    <a href=@Url.Action("EditProfile") title="Edit Profile">
                         <i class="fas fa-user-edit fa-fw"></i> Edit Profile
                     </a>
                 }

@@ -44,7 +44,7 @@ namespace BugTracker.Controllers
         }
 
         [PermissionAuthorize("View Own Projects, View All Projects")]
-        public ActionResult OwnProjects(bool? archived)
+        public ActionResult MyProjects(bool? archived)
         {
             var userId = User.Identity.GetUserId();
             var query = db.Projects
