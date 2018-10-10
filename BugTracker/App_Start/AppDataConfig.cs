@@ -5,7 +5,7 @@ using System.Web;
 
 namespace BugTracker
 {
-    public static class RolePermissionConfig
+    public static class AppDataConfig
     {
         public static IReadOnlyList<string> Roles = new List<string>
         {
@@ -26,7 +26,9 @@ namespace BugTracker
             "Archive All Projects",
             "Archive Own Projects",
             "Assign All Projects",
-            "Assign Own Projects"
+            "Assign Own Projects",
+            "Assign Tickets",
+            "Create Tickets"
         };
 
         public static IReadOnlyDictionary<string, IReadOnlyList<string>> RolePermissions = new Dictionary<string, IReadOnlyList<string>>
@@ -54,8 +56,36 @@ namespace BugTracker
             },
             ["Submitter"] = new List<string>
             {
-                "View Own Projects"
+                "View Own Projects",
+                "Create Tickets"
             }
         };
+
+        public static IReadOnlyList<string> TicketCategories = new List<string>
+        {
+            "Bug",
+            "Feature",
+            "Support"
+        };
+
+        public static IReadOnlyList<string> TicketStatus = new List<string>
+        {
+            "New",
+            "Assigned",
+            "Resolved",
+            "Feedback",
+            "Closed",
+            "Rejected"
+        };
+
+        public static IReadOnlyList<string> TicketPriorities = new List<string>
+        {
+            "Low",
+            "Normal",
+            "High",
+            "Urgent"
+        };
+
+
     }
 }

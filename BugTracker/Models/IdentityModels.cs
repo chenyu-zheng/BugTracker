@@ -15,7 +15,7 @@ namespace BugTracker.Models
         public virtual ICollection<Project> Projects { get; set; }
         [InverseProperty("Author")]
         public virtual ICollection<Ticket> Tickets { get; set; }
-        [InverseProperty("AssignedToUser")]
+        [InverseProperty("Assignee")]
         public virtual ICollection<Ticket> AssignedTickets { get; set; }
 
         public ApplicationUser()
@@ -40,6 +40,9 @@ namespace BugTracker.Models
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<TicketCategory> TicketCategories { get; set; }
+        public DbSet<TicketStatus> TicketStatus { get; set; }
+        public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Permission> Permissions { get; set; }
 
         public ApplicationDbContext()

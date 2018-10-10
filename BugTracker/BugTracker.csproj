@@ -189,8 +189,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\RolePermissionConfig.cs" />
+    <Compile Include="App_Start\AppDataConfig.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
+    <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Controllers\UserManageController.cs" />
     <Compile Include="Filters\PermissionAuthorizeAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\PermissionConfig.cs" />
     <Compile Include="Migrations\RoleConfig.cs" />
+    <Compile Include="Migrations\TicketConfig.cs" />
     <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\Extensions\IdentityExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -227,6 +229,7 @@
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
     <Compile Include="ViewModels\ProjectViewModels.cs" />
+    <Compile Include="ViewModels\TicketViewModels.cs" />
     <Compile Include="ViewModels\UserManageViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -501,6 +504,11 @@
     <Content Include="Views\Shared\_NavbarTopPartial.cshtml" />
     <Content Include="Views\Shared\_NavbarSidePartial.cshtml" />
     <Content Include="Scripts\metisMenu.js.map" />
+    <Content Include="Views\Tickets\Create.cshtml" />
+    <Content Include="Views\Tickets\Delete.cshtml" />
+    <Content Include="Views\Tickets\Details.cshtml" />
+    <Content Include="Views\Tickets\Edit.cshtml" />
+    <Content Include="Views\Tickets\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

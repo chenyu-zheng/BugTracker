@@ -22,15 +22,23 @@ namespace BugTracker.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
 
+            // For development only. In case permissions have been changed. 
             context.Database.ExecuteSqlCommand("TRUNCATE TABLE [ApplicationRolePermissions]");
             var dbPermissions = context.Permissions.ToList();
             context.Permissions.RemoveRange(dbPermissions);
             context.SaveChanges();
             context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('[Permissions]', RESEED, 0)");
 
-            PermissionConfig.InitializePermissions(context, RolePermissionConfig.Permissions);
-            RoleConfig.InitializeRoles(context, RolePermissionConfig.Roles);
-            RoleConfig.InitializeRolePermissions(context, RolePermissionConfig.RolePermissions);
+            PermissionConfig.InitializePermissions(context, AppDataConfig.Permissions);
+            RoleConfig.InitializeRoles(context, AppDataConfig.Roles);
+            RoleConfig.InitializeRolePermissions(context, AppDataConfig.RolePermissions);
+
+            new TicketConfig(
+                context,
+                AppDataConfig.TicketCategories,
+                AppDataConfig.TicketPriorities,
+                AppDataConfig.TicketStatus)
+                .Init();
 
             ApplicationUserManager userManager = new ApplicationUserManager(new ApplicationUserStore(context));
 
