@@ -104,7 +104,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Subject,Description,ProjectId,CategoryId,PriorityId")] Ticket ticket)
+        public ActionResult Create([Bind(Include = "Subject,Description,ProjectId,CategoryId,PriorityId")] Ticket ticket)
         {
             var userId = User.Identity.GetUserId();
 
@@ -125,7 +125,7 @@ namespace BugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            ticket.Status = new TicketStatus { Name = "New" };
+            ticket.Status = db.TicketStatus.FirstOrDefault(s => s.Name == "New");
             ticket.AuthorId = userId;
             db.Tickets.Add(ticket);
             db.SaveChanges();
