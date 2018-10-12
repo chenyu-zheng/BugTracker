@@ -32,12 +32,18 @@ namespace BugTracker
                         "~/Scripts/tinymce/tinymce.js",
                         "~/Scripts/tinymce/jquery.tinymce.min.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/DataTables").Include(
+                        "~/Scripts/DataTables/jquery.dataTables.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/all.css",
-                      "~/Content/metisMenu.css",
-                      "~/Content/sb-admin-2.css",
-                      "~/Content/site.css"));
+                        "~/Content/bootstrap.css",
+                        "~/Content/all.css",
+                        "~/Content/metisMenu.css",
+                        "~/Content/sb-admin-2.css",
+                        "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/DataTables/css").Include(
+                        "~/Content/DataTables/css/jquery.dataTables.css"));
         }
     }
 }
