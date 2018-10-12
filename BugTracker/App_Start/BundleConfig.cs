@@ -33,7 +33,8 @@ namespace BugTracker
                         "~/Scripts/tinymce/jquery.tinymce.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/DataTables").Include(
-                        "~/Scripts/DataTables/jquery.dataTables.js"));
+                        "~/Scripts/DataTables/jquery.dataTables.js",
+                        "~/Scripts/DataTables/dataTables.bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                         "~/Content/bootstrap.css",
@@ -43,7 +44,7 @@ namespace BugTracker
                         "~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/Content/DataTables/css").Include(
-                        "~/Content/DataTables/css/jquery.dataTables.css"));
+                        "~/Content/DataTables/css/dataTables.bootstrap.css"));
         }
     }
 }

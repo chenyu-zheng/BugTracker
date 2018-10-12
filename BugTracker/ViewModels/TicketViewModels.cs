@@ -10,12 +10,15 @@ namespace BugTracker.ViewModels
     {
         public int Id { get; set; }
         public string Subject { get; set; }
-        public DateTimeOffset Created { get; set; }
-        public DateTimeOffset? Updated { get; set; }
+        [Display(Name = "Last Updated")]
+        public DateTimeOffset LastUpdated { get; set; }
         [Display(Name = "Project")]
         public string ProjectName { get; set; }
+        [Display(Name = "Category")]
         public string CategoryName { get; set; }
+        [Display(Name = "Status")]
         public string StatusName { get; set; }
+        [Display(Name = "Priority")]
         public string PriorityName { get; set; }
         [Display(Name = "Author")]
         public string AuthorName { get; set; }
@@ -32,6 +35,8 @@ namespace BugTracker.ViewModels
     public class TicketDetailsViewModel : TicketViewModel
     {
         public string Description { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset? Updated { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? DueDate { get; set; }
         public int ProjectId { get; set; }

@@ -23,24 +23,10 @@ namespace BugTracker.Controllers
         // GET: Tickets
         public ActionResult Index()
         {
-            var tickets = db.Tickets
-                .Select(t => new TicketViewModel
-                {
-                    Id = t.Id,
-                    Subject = t.Subject,
-                    Created = t.Created,
-                    Updated = t.Updated,
-                    ProjectName = t.Project.Name,
-                    CategoryName = t.Category.Name,
-                    StatusName = t.Status.Name,
-                    PriorityName = t.Priority.Name,
-                    AuthorName = t.Author.DisplayName,
-                    AssigneeName = t.Assignee.DisplayName,
-                    NumberOfRevisions = t.Revisions.Count(),
-                    NumberOfComments = t.Comments.Count(),
-                    NumberOfAttachments = t.Attachments.Count()
-                });
-            return View(tickets.ToList());
+            var model = db.Tickets
+                .ProjectTo<TicketViewModel>(MappingConfig.Config)
+                .ToList();
+            return View(model);
         }
 
         // GET: Tickets/Details/5
