@@ -34,6 +34,11 @@ namespace BugTracker.Helpers
             this.roleManager = roleManager;
         }
 
+        public ApplicationUser FindUserById(string userId)
+        {
+            return userManager.FindById(userId);
+        }
+
         public List<string> RoleList(string userId)
         {
             return userManager.GetRoles(userId).ToList();

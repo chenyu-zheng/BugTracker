@@ -10,6 +10,9 @@ using BugTracker.ActionFilters;
 using BugTracker.Models;
 using BugTracker.ViewModels;
 using Microsoft.AspNet.Identity;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
+using BugTracker.Helpers;
 
 namespace BugTracker.Controllers
 {
@@ -28,9 +31,9 @@ namespace BugTracker.Controllers
                     Created = t.Created,
                     Updated = t.Updated,
                     ProjectName = t.Project.Name,
-                    Category = t.Category.Name,
-                    Status = t.Status.Name,
-                    Priority = t.Priority.Name,
+                    CategoryName = t.Category.Name,
+                    StatusName = t.Status.Name,
+                    PriorityName = t.Priority.Name,
                     AuthorName = t.Author.DisplayName,
                     AssigneeName = t.Assignee.DisplayName,
                     NumberOfRevisions = t.Revisions.Count(),
@@ -47,12 +50,40 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Ticket ticket = db.Tickets.Find(id);
+
+            IQueryable<Ticket> query; 
+            if (User.IsInRole("Admin"))
+            {
+                query = db.Tickets.AsQueryable();
+            }
+            else
+            {
+                query = Enumerable.Empty<Ticket>().AsQueryable();
+                var user = new UserManageHelper().FindUserById(User.Identity.GetUserId());
+                if (User.IsInRole("Project Manager"))
+                {
+                    query = query.Union(user.Projects.SelectMany(p => p.Tickets)).AsQueryable();
+                }
+                if (User.IsInRole("Developer"))
+                {
+                    query = query.Union(user.AssignedTickets).AsQueryable();
+                }
+                if (User.IsInRole("Submitter"))
+                {
+                    query = query.Union(user.Tickets).AsQueryable();
+                }
+            }
+            
+            var ticket = query
+                //.ProjectTo<TicketDetailsViewModel>(MappingConfig.Config)
+                .FirstOrDefault(t => t.Id == id);
             if (ticket == null)
             {
                 return HttpNotFound();
             }
-            return View(ticket);
+            IMapper mapper = new Mapper(MappingConfig.Config);
+            var model = mapper.Map<Ticket, TicketDetailsViewModel>(ticket);
+            return View(model);
         }
 
         // GET: Tickets/Create

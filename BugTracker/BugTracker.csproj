@@ -212,6 +212,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MappingConfig.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Helpers\UserManageHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
