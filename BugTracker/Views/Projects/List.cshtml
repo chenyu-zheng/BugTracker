@@ -63,12 +63,12 @@
                                         @Html.DisplayFor(m => item.NumberOfTickets)
                                     </td>
                                     <td>
-                                        @item.Created.ToString("yyyy-MM-dd HH:mm")
+                                        @item.Created.ToString("yy-MM-dd HH:mm")
                                     </td>
                                     <td>
                                         @if (item.Updated.HasValue)
                                         {
-                                            @item.Updated.GetValueOrDefault().ToString("yyyy-MM-dd HH:mm")
+                                            @item.Updated.GetValueOrDefault().ToString("yy-MM-dd HH:mm")
                                         }
                                     </td>
                                     @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
