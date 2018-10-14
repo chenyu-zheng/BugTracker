@@ -31,6 +31,15 @@ namespace BugTracker.ViewModels
         public int NumberOfAttachments { get; set; }
         [Display(Name = "Comments")]
         public int NumberOfComments { get; set; }
+        public bool CanViewDetails { get; set; }
+        public int ProjectId { get; set; }
+        public string AssigneeId { get; set; }
+        public string AuthorId { get; set; }
+
+        public TicketViewModel()
+        {
+            CanViewDetails = false;
+        }
     }
 
     public class TicketDetailsViewModel : TicketViewModel
@@ -40,8 +49,6 @@ namespace BugTracker.ViewModels
         public DateTimeOffset? Updated { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? DueDate { get; set; }
-        public int ProjectId { get; set; }
-        public string AssigneeId { get; set; }
         public List<AttachmentViewModel> Attachments { get; set; }
         public List<CommentViewModel> Comments { get; set; }
     }

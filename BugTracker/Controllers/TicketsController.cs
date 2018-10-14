@@ -26,6 +26,18 @@ namespace BugTracker.Controllers
             var model = db.Tickets
                 .ProjectTo<TicketViewModel>(MappingConfig.Config)
                 .ToList();
+            var userId = User.Identity.GetUserId();
+            var helper = new UserManageHelper();
+            foreach (var item in model)
+            {
+                if (User.IsInRole("Admin") ||
+                    User.IsInRole("Project Manager") && helper.IsProjectMember(userId, item.ProjectId) ||
+                    User.IsInRole("Developer") && item.AssigneeId == userId ||
+                    User.IsInRole("Submitter") && item.AuthorId == userId)
+                {
+                    item.CanViewDetails = true;
+                }
+            }
             return View(model);
         }
 

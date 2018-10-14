@@ -753,7 +753,9 @@
     <Content Include="Views\Tickets\Details.cshtml" />
     <Content Include="Views\Tickets\Edit.cshtml" />
     <Content Include="Views\Tickets\Index.cshtml" />
-    <Content Include="Views\Projects\_CreateLink.cshtml" />
+    <Content Include="Views\Projects\_CreateEntryPartial.cshtml" />
+    <Content Include="Views\Projects\_EditEntriesPartial.cshtml" />
+    <Content Include="Views\Projects\_EditEntriesDPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

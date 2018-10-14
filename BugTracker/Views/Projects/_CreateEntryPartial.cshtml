@@ -1,0 +1,6 @@
+﻿@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+{
+    <a href=@Url.Action("Create") title="Create Project">
+        <i class="fas fa-plus fa-fw"></i> Create
+    </a>
+}

@@ -154,7 +154,7 @@ namespace BugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Project project = db.Projects
-                .Where(p => p.Id == id || p.Archived == false)
+                .Where(p => p.Id == id && p.Archived == false)
                 .FirstOrDefault();
             if (project == null)
             {
@@ -174,7 +174,7 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 Project op = db.Projects.Where(p => p.Id == project.Id).FirstOrDefault();
-                if (op == null || op.Archived)
+                if (op == null && op.Archived)
                 {
                     return HttpNotFound();
                 }

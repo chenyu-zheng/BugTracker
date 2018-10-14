@@ -10,109 +10,129 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 
-        <table id="ticketList" class="table table-striped" style="width: 100%">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(m => m.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.Subject)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.LastUpdated)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.CategoryName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.StatusName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.PriorityName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.AuthorName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.AssigneeName)
-                    </th>
-                    <th title="@Html.DisplayNameFor(m => m.NumberOfRevisions)">
-                        <i class="fas fa-history"></i>
-                    </th>
-                    <th title="@Html.DisplayNameFor(m => m.NumberOfAttachments)">
-                        <i class="fas fa-paperclip"></i>
-                    </th>
-                    <th title="@Html.DisplayNameFor(m => m.NumberOfComments)">
-                        <i class="far fa-comment-alt"></i>
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(m => m.ProjectName)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
+<table id="ticketList" class="table table-striped" style="width: 100%">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(m => m.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Subject)
+            </th>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(m => m.LastUpdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.CategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.StatusName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.PriorityName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.AuthorName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.AssigneeName)
+            </th>
+            <th title="@Html.DisplayNameFor(m => m.NumberOfRevisions)">
+                <i class="fas fa-history"></i>
+            </th>
+            <th title="@Html.DisplayNameFor(m => m.NumberOfAttachments)">
+                <i class="fas fa-paperclip"></i>
+            </th>
+            <th title="@Html.DisplayNameFor(m => m.NumberOfComments)">
+                <i class="far fa-comment-alt"></i>
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.ProjectName)
+            </th>
+        </tr>
+    </thead>
 
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            <a href="@Url.Action("Details", new { id = item.Id })">
-                                @Html.DisplayFor(m => item.Id)
-                            </a>
-                        </td>
-                        <td>
-                            <a href="@Url.Action("Details", new { id = item.Id })">
-                                @Html.DisplayFor(m => item.Subject)
-                            </a>
-                        </td>
-                        <td>
-                            @item.LastUpdated.ToString("yy-MM-dd HH:mm")
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.CategoryName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.StatusName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.PriorityName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.AuthorName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.AssigneeName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.NumberOfRevisions)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.NumberOfAttachments)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.NumberOfComments)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.ProjectName)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.CanViewDetails)
+                    {
+                        <a href="@Url.Action("Details", new { id = item.Id })">
+                            @Html.DisplayFor(m => item.Id)
+                        </a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(m => item.Id)
+                    }
+                </td>
+                <td>
+                    @if (item.CanViewDetails)
+                    {
+                        <a href="@Url.Action("Details", new { id = item.Id })">
+                            @Html.DisplayFor(m => item.Subject)
+                        </a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(m => item.Subject)
+                    }
+                </td>
+                <td>
+                    @if (item.CanViewDetails)
+                    {
+                        <a href=@Url.Action("Edit", new { id = item.Id }) title="Edit Ticket">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    }
+                </td>
+                <td>
+                    @item.LastUpdated.ToString("yy-MM-dd HH:mm")
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.StatusName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.PriorityName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.AuthorName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.AssigneeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberOfRevisions)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberOfAttachments)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberOfComments)
+                </td>
+                <td title=@Html.DisplayFor(m => item.ProjectName)>
+                    @item.ProjectName.Substring(0, item.ProjectName.Length > 15 ? 15 : item.ProjectName.Length)...
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/DataTables")
     <script>
         $('#ticketList').DataTable({
-            "order": [[0, "desc"]]
+            "order": [[0, "desc"]],
+            "columnDefs": [
+                { "orderable": false, "targets": 2 }
+            ]
         });
     </script>
 }

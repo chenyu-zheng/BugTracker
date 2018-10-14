@@ -1,0 +1,18 @@
+﻿@model int
+@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+{
+    <a href=@Url.Action("Edit", new { id = Model }) title="Edit Project">
+        <i class="fas fa-edit fa-fw"></i> Edit
+    </a>
+    @Html.Raw("&emsp;")
+    <a href=@Url.Action("ChangeMember", new { id = Model}) title="Edit Members">
+        <i class="fas fa-user-friends fa-fw"></i> Members
+    </a>
+}
+@if (User.IsInRole("Admin"))
+{
+    @Html.Raw("&emsp;")
+    <a href=@Url.Action("Delete", new { id = Model }) title="Delete Project">
+        <i class="fas fa-trash-alt fa-fw"></i> Delete
+    </a>
+}
