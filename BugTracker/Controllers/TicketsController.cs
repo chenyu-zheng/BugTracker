@@ -37,7 +37,7 @@ namespace BugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            IQueryable<Ticket> query; 
+            IQueryable<Ticket> query;
             if (User.IsInRole("Admin"))
             {
                 query = db.Tickets.AsQueryable();
@@ -47,7 +47,7 @@ namespace BugTracker.Controllers
                 query = Enumerable.Empty<Ticket>().AsQueryable();
                 var user = new UserManageHelper().FindUserById(User.Identity.GetUserId());
                 if (User.IsInRole("Project Manager"))
-                {   
+                {
                     query = query.Union(user.Projects.SelectMany(p => p.Tickets)).AsQueryable();
                 }
                 if (User.IsInRole("Developer"))
@@ -59,7 +59,7 @@ namespace BugTracker.Controllers
                     query = query.Union(user.Tickets).AsQueryable();
                 }
             }
-            
+
             var ticket = query
                 //.ProjectTo<TicketDetailsViewModel>(MappingConfig.Config)
                 .FirstOrDefault(t => t.Id == id);
@@ -99,7 +99,7 @@ namespace BugTracker.Controllers
             {
                 ProjectId = projectId,
                 ProjectList = new SelectList(projects, "Id", "Name"),
-                    
+
                 PriorityId = priorities.FirstOrDefault().Id,
                 PriorityList = new SelectList(priorities, "Id", "Name"),
 
@@ -148,8 +148,8 @@ namespace BugTracker.Controllers
             if (!db.TicketCategories.Any(p => p.Id == ticket.CategoryId) || // CategoryId doesn't exist
                 !db.TicketPriorities.Any(p => p.Id == ticket.PriorityId) || // PriorityId doesn't exist
                 !db.Projects.Any(p => p.Id == ticket.ProjectId &&           // ProjectId doesn't exist or the author is not a member
-                    p.Members.Any(m => m.Id == userId))                 ||
-                !(string.IsNullOrWhiteSpace(ticket.AssigneeId) ||           // Assignee doesn't exist or isn't a developer
+                    p.Members.Any(m => m.Id == userId)) ||
+                !(string.IsNullOrWhiteSpace(ticket.AssigneeId) ||           // Assignee doesn't exist or isn't a developer or not belong to the project
                     helper.HasRole(ticket.AssigneeId, "Developer") &&
                     helper.IsProjectMember(ticket.AssigneeId, ticket.ProjectId))
                 )
@@ -169,26 +169,6 @@ namespace BugTracker.Controllers
             return RedirectToAction("Index");
         }
 
-        [PermissionAuthorize("Assign Tickets")]
-        public JsonResult GetAssigneeList(int projectId)
-        {
-            var roleId = db.Roles
-                .Where(r => r.Name == "Developer")
-                .Select(r => r.Id)
-                .FirstOrDefault();
-            var data = db.Users
-                .Where(u => 
-                    u.Projects.Any(p => p.Id == projectId) && 
-                    u.Roles.Any(ur => ur.RoleId == roleId))
-                .Select(u => new { u.Id, u.DisplayName })
-                .ToList();
-            if (data.Any())
-            {
-                return Json(new { data }, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
-        }
-
         // GET: Tickets/Edit/5
         [PermissionAuthorize("Edit Tickets")]
         public ActionResult Edit(int? id)
@@ -199,7 +179,7 @@ namespace BugTracker.Controllers
             }
             var userId = User.Identity.GetUserId();
             var helper = new UserManageHelper();
-            Ticket ticket = db.Tickets.Include("Status").FirstOrDefault(t => t.Id == id);
+            Ticket ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
             if (ticket == null ||
                 !(User.IsInRole("Admin") ||
                     User.IsInRole("Submitter") && ticket.AuthorId == userId ||
@@ -213,7 +193,7 @@ namespace BugTracker.Controllers
             IMapper mapper = new Mapper(MappingConfig.Config);
             var model = mapper.Map<Ticket, EditTicketViewModel>(ticket);
             var statusQuery = db.TicketStatus.AsQueryable();
-            if (ticket.Status.Name == "New")
+            if (ticket.AssigneeId == null)
             {
                 statusQuery = statusQuery.Where(s => s.Name != "Assigned");
             }
@@ -244,8 +224,8 @@ namespace BugTracker.Controllers
                 model.PriorityList = new SelectList(db.TicketPriorities, "Id", "Name");
                 if (db.Tickets
                 .Where(t => t.Id == model.Id)
-                .Select(t => t.Status.Name)
-                .FirstOrDefault() == "New")
+                .Select(t => t.AssigneeId)
+                .FirstOrDefault() == null)
                 {
                     model.StatusList = new SelectList(db.TicketStatus.Where(s => s.Name != "Assigned"), "Id", "Name");
                 }
@@ -289,7 +269,7 @@ namespace BugTracker.Controllers
             ticketDb.Description = model.Description;
             ticketDb.CategoryId = model.CategoryId;
             ticketDb.PriorityId = model.PriorityId;
-            if (User.IsInRole("Admin") || 
+            if (User.IsInRole("Admin") ||
                 User.IsInRole("Project Manager") && helper.IsProjectMember(userId, ticketDb.ProjectId))
             {
                 ticketDb.StatusId = model.StatusId;
@@ -297,7 +277,7 @@ namespace BugTracker.Controllers
             ticketDb.Updated = DateTime.Now;
             db.Entry(ticketDb).State = EntityState.Modified;
             db.SaveChanges();
-            return RedirectToAction("Details", new { id = ticketDb.Id});
+            return RedirectToAction("Details", new { id = ticketDb.Id });
         }
 
         // GET: Tickets/Delete/5
@@ -329,6 +309,72 @@ namespace BugTracker.Controllers
             db.Tickets.Remove(ticket);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [PermissionAuthorize("Assign Tickets")]
+        public ActionResult Assign(int? id, string assigneeId)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var ticket = db.Tickets
+                .Where(t => t.Id == id)
+                .Include(t => t.Status)
+                .FirstOrDefault();
+            if (ticket == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (string.IsNullOrWhiteSpace(assigneeId))
+            {
+                assigneeId = null;
+            }
+            if (ticket.AssigneeId != assigneeId)
+            {
+                var helper = new UserManageHelper();
+                if (!(string.IsNullOrWhiteSpace(assigneeId) ||           // Assignee doesn't exist or isn't a developer or not belong to the project
+                        helper.HasRole(assigneeId, "Developer") &&
+                        helper.IsProjectMember(assigneeId, ticket.ProjectId)))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                ticket.AssigneeId = assigneeId;
+                if (ticket.Status.Name == "Assigned" && assigneeId == null)
+                {
+                    ticket.Status = db.TicketStatus.FirstOrDefault(s => s.Name == "New");
+                }
+                if (ticket.Status.Name == "New" && assigneeId != null)
+                {
+                    ticket.Status = db.TicketStatus.FirstOrDefault(s => s.Name == "Assigned");
+                }
+                ticket.Updated = DateTime.Now;
+                db.Entry(ticket).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Details", new { id });
+        }
+
+        [PermissionAuthorize("Assign Tickets")]
+        public JsonResult GetAssigneeList(int projectId)
+        {
+            var roleId = db.Roles
+                .Where(r => r.Name == "Developer")
+                .Select(r => r.Id)
+                .FirstOrDefault();
+            var data = db.Users
+                .Where(u =>
+                    u.Projects.Any(p => p.Id == projectId) &&
+                    u.Roles.Any(ur => ur.RoleId == roleId))
+                .Select(u => new { u.Id, u.DisplayName })
+                .ToList();
+            if (data.Any())
+            {
+                return Json(new { data }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

@@ -133,11 +133,61 @@
         <dd>
             @Html.DisplayFor(m => m.NumberOfComments)
         </dd>
-
-
     </dl>
 </div>
+@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+{
+    <div class="row">
+        <a href="#" id="enableAssignment" class="col-md-3">Assign To</a>
+        @using (Html.BeginForm("Assign", "Tickets", FormMethod.Post,
+            new { id = "AssignForm", style = "display: none" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="Id" name="Id" value=@Model.Id class="form-control" />
+            <div class="form-group">
+                <div class="col-md-4">
+                    <select class="form-control" id="AssigneeId" name="AssigneeId"></select>
+                </div>
+                <div class="col-md-4">
+                    <input type="submit" value="Assign" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    </div>
+}
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
+
 </p>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+{
+    @section Scripts {
+        <script type="text/javascript">
+            $("#enableAssignment").click(() => {
+                if ($('#AssignForm').is(':visible')) {
+                    $("#enableAssignment").text("Assign To");
+                    $("#AssignForm").hide();
+                } else {
+                    $("#enableAssignment").text("Cancel");
+                    $("#AssignForm").show();
+                    showValue(@Model.ProjectId, "@Model.AssigneeId");
+                }
+            });
+
+            function showValue(projectId, selectedVal = null)
+            {
+                $("#AssigneeId").html("<option value>Not Assigned</option>");
+                projectId &&
+                    $.getJSON('@Url.Action("GetAssigneeList", "Tickets")' + "?projectId=" + projectId, (result) => {
+                        const data = result.data;
+                        for (const item of data) {
+                            $("#AssigneeId").append(`<option value="${item.Id}">${item.DisplayName}</option>`)
+                            item.Id == selectedVal && $("#AssigneeId").val(selectedVal);
+                        }
+                    });
+            }
+        </script>
+    }
+}

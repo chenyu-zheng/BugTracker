@@ -41,6 +41,7 @@ namespace BugTracker.ViewModels
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? DueDate { get; set; }
         public int ProjectId { get; set; }
+        public string AssigneeId { get; set; }
         public List<AttachmentViewModel> Attachments { get; set; }
         public List<CommentViewModel> Comments { get; set; }
     }
