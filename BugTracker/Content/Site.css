@@ -130,3 +130,13 @@ label.role-checkbox + .checkbox-inline {
     transform: rotate(45deg);
     box-sizing: initial;
 }
+
+table.no-border > tbody > tr > td,
+table.no-border > tbody > tr > th,
+table.no-border > thead > tr > th {
+    border: none;
+}
+
+.break-word {
+    word-break: break-word;
+}

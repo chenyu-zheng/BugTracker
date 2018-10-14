@@ -1,129 +1,147 @@
 ﻿@model IEnumerable<BugTracker.ViewModels.TicketViewModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Tickets";
 }
 
-<h2>Index</h2>
+<hr />
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                @ViewBag.Title&ensp;-&ensp;@ViewBag.Type
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="ticketList" class="table table-striped" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.Subject)
+                                </th>
+                                <th></th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.LastUpdated)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.CategoryName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.StatusName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.PriorityName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.AuthorName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.AssigneeName)
+                                </th>
+                                <th title="@Html.DisplayNameFor(m => m.NumberOfRevisions)">
+                                    <i class="fas fa-history"></i>
+                                </th>
+                                <th title="@Html.DisplayNameFor(m => m.NumberOfAttachments)">
+                                    <i class="fas fa-paperclip"></i>
+                                </th>
+                                <th title="@Html.DisplayNameFor(m => m.NumberOfComments)">
+                                    <i class="far fa-comment-alt"></i>
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(m => m.ProjectName)
+                                </th>
+                            </tr>
+                        </thead>
 
-<table id="ticketList" class="table table-striped" style="width: 100%">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(m => m.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.Subject)
-            </th>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(m => m.LastUpdated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.CategoryName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.StatusName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.PriorityName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.AuthorName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.AssigneeName)
-            </th>
-            <th title="@Html.DisplayNameFor(m => m.NumberOfRevisions)">
-                <i class="fas fa-history"></i>
-            </th>
-            <th title="@Html.DisplayNameFor(m => m.NumberOfAttachments)">
-                <i class="fas fa-paperclip"></i>
-            </th>
-            <th title="@Html.DisplayNameFor(m => m.NumberOfComments)">
-                <i class="far fa-comment-alt"></i>
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.ProjectName)
-            </th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @if (item.CanViewDetails)
-                    {
-                        <a href="@Url.Action("Details", new { id = item.Id })">
-                            @Html.DisplayFor(m => item.Id)
-                        </a>
-                    }
-                    else
-                    {
-                        @Html.DisplayFor(m => item.Id)
-                    }
-                </td>
-                <td>
-                    @if (item.CanViewDetails)
-                    {
-                        <a href="@Url.Action("Details", new { id = item.Id })">
-                            @Html.DisplayFor(m => item.Subject)
-                        </a>
-                    }
-                    else
-                    {
-                        @Html.DisplayFor(m => item.Subject)
-                    }
-                </td>
-                <td>
-                    @if (item.CanViewDetails)
-                    {
-                        <a href=@Url.Action("Edit", new { id = item.Id }) title="Edit Ticket">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    }
-                </td>
-                <td>
-                    @item.LastUpdated.ToString("yy-MM-dd HH:mm")
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.StatusName)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.PriorityName)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.AuthorName)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.AssigneeName)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.NumberOfRevisions)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.NumberOfAttachments)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => item.NumberOfComments)
-                </td>
-                <td title=@Html.DisplayFor(m => item.ProjectName)>
-                    @item.ProjectName.Substring(0, item.ProjectName.Length > 15 ? 15 : item.ProjectName.Length)...
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.CanViewDetails)
+                                        {
+                                            <a href="@Url.Action("Details", new { id = item.Id })">
+                                                @Html.Raw(item.Id.ToString("D4"))
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw(item.Id.ToString("D4"))
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.CanViewDetails)
+                                        {
+                                            <a href="@Url.Action("Details", new { id = item.Id })">
+                                                @Html.DisplayFor(m => item.Subject)
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(m => item.Subject)
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.CanViewDetails)
+                                        {
+                                            <a href=@Url.Action("Edit", new { id = item.Id }) title="Edit Ticket">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                    <td>
+                                        @item.LastUpdated.ToString("yy-MM-dd HH:mm")
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.CategoryName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.StatusName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.PriorityName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.AuthorName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.AssigneeName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.NumberOfRevisions)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.NumberOfAttachments)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.NumberOfComments)
+                                    </td>
+                                    <td title="@Html.DisplayFor(m => item.ProjectName)">
+                                        @if (item.ProjectName.Length > 15)
+                                        {
+                                            @Html.Raw(item.ProjectName.Substring(0, 15) + "...");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw(item.ProjectName);
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/DataTables")

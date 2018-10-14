@@ -38,9 +38,38 @@
             </a>
         </li>
         <li>
-            <a href=@Url.Action("Index", "Tickets")>
-                <i class="fas fa-file-alt fa-fw"></i> Tickets
-            </a>
+            <a href="#"><i class="fas fa-file-alt fa-fw"></i> Tickets<span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level">
+                @if (User.IsInRole("Submitter"))
+                {
+                    <li>
+                        <a href=@Url.Action("Create", "Tickets") title="Create a New Ticket">
+                            <i class="fas fa-plus fa-fw"></i> New
+                        </a>
+                    </li>
+                }
+                <li>
+                    @Html.ActionLink("All Tickets", "Index", "Tickets")
+                </li>
+                @if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+                {
+                    <li>
+                        @Html.ActionLink("From My Projects", "FromMyProjects", "Tickets")
+                    </li>
+                }
+                @if (User.IsInRole("Developer"))
+                {
+                    <li>
+                        @Html.ActionLink("Assigned to Me", "AssignedToMe", "Tickets")
+                    </li>
+                }
+                @if (User.IsInRole("Submitter"))
+                {
+                    <li>
+                        @Html.ActionLink("Posted by Me", "CreatedByMe", "Tickets")
+                    </li>
+                }
+            </ul>
         </li>
     }
 </ul>

@@ -73,10 +73,13 @@ namespace BugTracker.ViewModels
         [StringLength(5000, MinimumLength = 1, ErrorMessage = "The {0} cannot exceed {2} characters.")]
         public string Description { get; set; }
         [Required]
+        [Display(Name = "Project")]
         public int? ProjectId { get; set; }
         public IEnumerable<SelectListItem> ProjectList { get; set; }
+        [Display(Name = "Category")]
         public int CategoryId { get; set; }
         public IEnumerable<SelectListItem> CategoryList { get; set; }
+        [Display(Name = "Priority")]
         public int PriorityId { get; set; }
         public IEnumerable<SelectListItem> PriorityList { get; set; }
         [Display(Name = "Assign To")]
@@ -100,12 +103,16 @@ namespace BugTracker.ViewModels
         [StringLength(5000, MinimumLength = 1, ErrorMessage = "The {0} cannot exceed {2} characters.")]
         public string Description { get; set; }
         [Required]
+        [Display(Name = "Project")]
         public int? ProjectId { get; set; }
         public IEnumerable<SelectListItem> ProjectList { get; set; }
+        [Display(Name = "Category")]
         public int CategoryId { get; set; }
         public IEnumerable<SelectListItem> CategoryList { get; set; }
+        [Display(Name = "Priority")]
         public int PriorityId { get; set; }
         public IEnumerable<SelectListItem> PriorityList { get; set; }
+        [Display(Name = "Status")]
         public int StatusId { get; set; }
         public IEnumerable<SelectListItem> StatusList { get; set; }
     }

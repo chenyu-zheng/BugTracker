@@ -38,7 +38,56 @@ namespace BugTracker.Controllers
                     item.CanViewDetails = true;
                 }
             }
+            ViewBag.Type = "All";
             return View(model);
+        }
+
+        [Authorize(Roles = "Project Manager, Developer")]
+        public ActionResult FromMyprojects()
+        {
+            var userId = User.Identity.GetUserId();
+            var model = db.Tickets
+                .Where(t => t.Project.Members.Any(m => m.Id == userId))
+                .ProjectTo<TicketViewModel>(MappingConfig.Config)
+                .ToList();
+            if (User.IsInRole("Project Manager"))
+            {
+                model.ForEach(m => m.CanViewDetails = true);
+            }
+            else
+            {
+                model.ForEach(m => {
+                    if (m.AssigneeId == userId) m.CanViewDetails = true;
+                });
+            }
+            ViewBag.Type = "From My Projects";
+            return View("Index", model);
+        }
+
+        [Authorize(Roles = "Developer")]
+        public ActionResult AssignedToMe()
+        {
+            var userId = User.Identity.GetUserId();
+            var model = db.Tickets
+                .Where(t => t.AssigneeId == userId)
+                .ProjectTo<TicketViewModel>(MappingConfig.Config)
+                .ToList();
+            model.ForEach(m => m.CanViewDetails = true);
+            ViewBag.Type = "Assigned to Me";
+            return View("Index", model);
+        }
+
+        [Authorize(Roles = "Submitter")]
+        public ActionResult CreatedByMe()
+        {
+            var userId = User.Identity.GetUserId();
+            var model = db.Tickets
+                .Where(t => t.AuthorId == userId)
+                .ProjectTo<TicketViewModel>(MappingConfig.Config)
+                .ToList();
+            model.ForEach(m => m.CanViewDetails = true);
+            ViewBag.Type = "Posted by Me";
+            return View("Index", model);
         }
 
         // GET: Tickets/Details/5
