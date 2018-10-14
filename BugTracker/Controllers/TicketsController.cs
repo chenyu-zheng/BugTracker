@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
 using BugTracker.Helpers;
+using BugTracker.Models.Interfaces;
 
 namespace BugTracker.Controllers
 {
@@ -20,29 +21,22 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Tickets
+        [PermissionAuthorize("List All Tickets")]
         public ActionResult Index()
         {
             var model = db.Tickets
                 .ProjectTo<TicketViewModel>(MappingConfig.Config)
                 .ToList();
+
             var userId = User.Identity.GetUserId();
             var helper = new UserManageHelper();
-            foreach (var item in model)
-            {
-                if (User.IsInRole("Admin") ||
-                    User.IsInRole("Project Manager") && helper.IsProjectMember(userId, item.ProjectId) ||
-                    User.IsInRole("Developer") && item.AssigneeId == userId ||
-                    User.IsInRole("Submitter") && item.AuthorId == userId)
-                {
-                    item.CanViewDetails = true;
-                }
-            }
+            model.ForEach(m => m.CanEdit = helper.CanEditTicket(userId, m));
+
             ViewBag.Type = "All";
             return View(model);
         }
 
-        [Authorize(Roles = "Project Manager, Developer")]
+        [PermissionAuthorize("List Projects Tickets")]
         public ActionResult FromMyprojects()
         {
             var userId = User.Identity.GetUserId();
@@ -50,21 +44,15 @@ namespace BugTracker.Controllers
                 .Where(t => t.Project.Members.Any(m => m.Id == userId))
                 .ProjectTo<TicketViewModel>(MappingConfig.Config)
                 .ToList();
-            if (User.IsInRole("Project Manager"))
-            {
-                model.ForEach(m => m.CanViewDetails = true);
-            }
-            else
-            {
-                model.ForEach(m => {
-                    if (m.AssigneeId == userId) m.CanViewDetails = true;
-                });
-            }
+
+            var helper = new UserManageHelper();
+            model.ForEach(m => m.CanEdit = helper.CanEditTicket(userId, m));
+
             ViewBag.Type = "From My Projects";
             return View("Index", model);
         }
 
-        [Authorize(Roles = "Developer")]
+        [PermissionAuthorize("List Assigned Tickets")]
         public ActionResult AssignedToMe()
         {
             var userId = User.Identity.GetUserId();
@@ -72,12 +60,15 @@ namespace BugTracker.Controllers
                 .Where(t => t.AssigneeId == userId)
                 .ProjectTo<TicketViewModel>(MappingConfig.Config)
                 .ToList();
-            model.ForEach(m => m.CanViewDetails = true);
+
+            var helper = new UserManageHelper();
+            model.ForEach(m => m.CanEdit = helper.CanEditTicket(userId, m));
+
             ViewBag.Type = "Assigned to Me";
             return View("Index", model);
         }
 
-        [Authorize(Roles = "Submitter")]
+        [PermissionAuthorize("List Created Tickets")]
         public ActionResult CreatedByMe()
         {
             var userId = User.Identity.GetUserId();
@@ -85,7 +76,10 @@ namespace BugTracker.Controllers
                 .Where(t => t.AuthorId == userId)
                 .ProjectTo<TicketViewModel>(MappingConfig.Config)
                 .ToList();
-            model.ForEach(m => m.CanViewDetails = true);
+
+            var helper = new UserManageHelper();
+            model.ForEach(m => m.CanEdit = helper.CanEditTicket(userId, m));
+
             ViewBag.Type = "Posted by Me";
             return View("Index", model);
         }
@@ -98,38 +92,20 @@ namespace BugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            IQueryable<Ticket> query;
-            if (User.IsInRole("Admin"))
-            {
-                query = db.Tickets.AsQueryable();
-            }
-            else
-            {
-                query = Enumerable.Empty<Ticket>().AsQueryable();
-                var user = new UserManageHelper().FindUserById(User.Identity.GetUserId());
-                if (User.IsInRole("Project Manager"))
-                {
-                    query = query.Union(user.Projects.SelectMany(p => p.Tickets)).AsQueryable();
-                }
-                if (User.IsInRole("Developer"))
-                {
-                    query = query.Union(user.AssignedTickets).AsQueryable();
-                }
-                if (User.IsInRole("Submitter"))
-                {
-                    query = query.Union(user.Tickets).AsQueryable();
-                }
-            }
+            var model = db.Tickets
+                .Where(t => t.Id == id)
+                .ProjectTo<TicketDetailsViewModel>(MappingConfig.Config)
+                .FirstOrDefault();
 
-            var ticket = query
-                //.ProjectTo<TicketDetailsViewModel>(MappingConfig.Config)
-                .FirstOrDefault(t => t.Id == id);
-            if (ticket == null)
+            var userId = User.Identity.GetUserId();
+            var helper = new UserManageHelper();
+            if (model == null || !helper.CanEditTicket(userId, model))
             {
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            IMapper mapper = new Mapper(MappingConfig.Config);
-            var model = mapper.Map<Ticket, TicketDetailsViewModel>(ticket);
+            model.CanEdit = true;
+            model.CanAssign = helper.HasPermission(userId, "Assign Tickets");
+            model.CanDelete = helper.HasPermission(userId, "Delete Tickets");
             return View(model);
         }
 
@@ -167,7 +143,7 @@ namespace BugTracker.Controllers
                 CategoryId = categories.FirstOrDefault().Id,
                 CategoryList = new SelectList(categories, "Id", "Name")
             };
-
+            model.CanAssign = new UserManageHelper().HasPermission(userId, "Assign Tickets");
             return View(model);
         }
 
@@ -183,12 +159,8 @@ namespace BugTracker.Controllers
 
             ActionResult modelInvalid()
             {
-                model.ProjectList = new SelectList(db.Projects
-                    .Where(p => p.Members.Any(m => m.Id == userId))
-                    .Select(p => new { p.Name, p.Id }),
-                    "Id", "Name");
-                model.PriorityList = new SelectList(db.TicketPriorities, "Id", "Name");
-                model.CategoryList = new SelectList(db.TicketCategories, "Id", "Name");
+                var vMHelper = new ViewModelHelper();
+                model = vMHelper.AddSelectLists(model, userId);
                 return View(model);
             }
 
@@ -231,7 +203,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Edit/5
-        [PermissionAuthorize("Edit Tickets")]
+        [PermissionAuthorize("Edit All Tickets, Edit Projects Tickets, Edit Assigned Tickets, Edit Created Tickets")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -241,32 +213,16 @@ namespace BugTracker.Controllers
             var userId = User.Identity.GetUserId();
             var helper = new UserManageHelper();
             Ticket ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
-            if (ticket == null ||
-                !(User.IsInRole("Admin") ||
-                    User.IsInRole("Submitter") && ticket.AuthorId == userId ||
-                    User.IsInRole("Developer") && ticket.AssigneeId == userId ||
-                    User.IsInRole("Project Manager") && helper.IsProjectMember(userId, ticket.ProjectId))
-                )
+            if (ticket == null || !helper.CanEditTicket(userId, ticket))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             IMapper mapper = new Mapper(MappingConfig.Config);
             var model = mapper.Map<Ticket, EditTicketViewModel>(ticket);
-            var statusQuery = db.TicketStatus.AsQueryable();
-            if (ticket.AssigneeId == null)
-            {
-                statusQuery = statusQuery.Where(s => s.Name != "Assigned");
-            }
-            else
-            {
-                statusQuery = statusQuery.Where(s => s.Name != "New");
-            }
-            model.ProjectList = new SelectList(db.Projects.Where(p => p.Id == model.ProjectId), "Id", "Name");
-            model.CategoryList = new SelectList(db.TicketCategories, "Id", "Name");
-            model.PriorityList = new SelectList(db.TicketPriorities, "Id", "Name");
-            model.StatusList = new SelectList(statusQuery, "Id", "Name");
-
+            var vMHelper = new ViewModelHelper();
+            model = vMHelper.AddSelectLists(model);
+            model.CanEditStatus = helper.HasPermission(userId, "Edit Ticket Status");
             return View(model);
         }
 
@@ -275,28 +231,15 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermissionAuthorize("Edit Tickets")]
+        [PermissionAuthorize("Edit All Tickets, Edit Projects Tickets, Edit Assigned Tickets, Edit Created Tickets")]
         public ActionResult Edit([Bind(Include = "Id,Subject,Description,ProjectId,CategoryId,StatusId,PriorityId,AssigneeId")] EditTicketViewModel model)
         {
             ActionResult modelInvalid()
             {
-                model.ProjectList = new SelectList(db.Projects.Where(p => p.Id == model.ProjectId), "Id", "Name");
-                model.CategoryList = new SelectList(db.TicketCategories, "Id", "Name");
-                model.PriorityList = new SelectList(db.TicketPriorities, "Id", "Name");
-                if (db.Tickets
-                .Where(t => t.Id == model.Id)
-                .Select(t => t.AssigneeId)
-                .FirstOrDefault() == null)
-                {
-                    model.StatusList = new SelectList(db.TicketStatus.Where(s => s.Name != "Assigned"), "Id", "Name");
-                }
-                else
-                {
-                    model.StatusList = new SelectList(db.TicketStatus.Where(s => s.Name != "New"), "Id", "Name");
-                }
+                var vMHelper = new ViewModelHelper();
+                model = vMHelper.AddSelectLists(model);
                 return View(model);
             }
-
             if (!ModelState.IsValid)
             {
                 return modelInvalid();
@@ -304,12 +247,7 @@ namespace BugTracker.Controllers
             var userId = User.Identity.GetUserId();
             var helper = new UserManageHelper();
             var ticketDb = db.Tickets.FirstOrDefault(t => t.Id == model.Id);
-            if (ticketDb == null ||
-                !(User.IsInRole("Admin") ||
-                    User.IsInRole("Submitter") && ticketDb.AuthorId == userId ||
-                    User.IsInRole("Developer") && ticketDb.AssigneeId == userId ||
-                    User.IsInRole("Project Manager") && helper.IsProjectMember(userId, ticketDb.ProjectId))
-                )
+            if (ticketDb == null || !helper.CanEditTicket(userId, ticketDb))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -330,8 +268,7 @@ namespace BugTracker.Controllers
             ticketDb.Description = model.Description;
             ticketDb.CategoryId = model.CategoryId;
             ticketDb.PriorityId = model.PriorityId;
-            if (User.IsInRole("Admin") ||
-                User.IsInRole("Project Manager") && helper.IsProjectMember(userId, ticketDb.ProjectId))
+            if (helper.HasPermission(userId, "Edit Ticket Status"))
             {
                 ticketDb.StatusId = model.StatusId;
             }
@@ -342,7 +279,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Delete/5
-        [Authorize(Roles = "Admin")]
+        [PermissionAuthorize("Delete Tickets")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -363,7 +300,7 @@ namespace BugTracker.Controllers
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [PermissionAuthorize("Delete Tickets")]
         public ActionResult DeleteConfirmed(int id)
         {
             Ticket ticket = db.Tickets.Find(id);
@@ -396,8 +333,8 @@ namespace BugTracker.Controllers
             if (ticket.AssigneeId != assigneeId)
             {
                 var helper = new UserManageHelper();
-                if (!(string.IsNullOrWhiteSpace(assigneeId) ||           // Assignee doesn't exist or isn't a developer or not belong to the project
-                        helper.HasRole(assigneeId, "Developer") &&
+                if (!(string.IsNullOrWhiteSpace(assigneeId) ||
+                        helper.HasPermission(assigneeId, "Receive Tickets") &&
                         helper.IsProjectMember(assigneeId, ticket.ProjectId)))
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -421,14 +358,13 @@ namespace BugTracker.Controllers
         [PermissionAuthorize("Assign Tickets")]
         public JsonResult GetAssigneeList(int projectId)
         {
-            var roleId = db.Roles
-                .Where(r => r.Name == "Developer")
-                .Select(r => r.Id)
-                .FirstOrDefault();
+            var roleIds = db.Roles
+                .Where(r => r.Permissions.Any(p => p.Name == "Receive Tickets"))
+                .Select(r => r.Id);
             var data = db.Users
                 .Where(u =>
                     u.Projects.Any(p => p.Id == projectId) &&
-                    u.Roles.Any(ur => ur.RoleId == roleId))
+                    u.Roles.Any(ur => roleIds.Contains(ur.RoleId)))
                 .Select(u => new { u.Id, u.DisplayName })
                 .ToList();
             if (data.Any())

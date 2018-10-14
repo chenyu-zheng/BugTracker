@@ -117,10 +117,13 @@
         </div>
     </div>
     <hr />
-    <a href=@Url.Action("Edit", new { id = Model.Id }) title="Edit Project">
-        <i class="fas fa-edit fa-fw"></i> Edit
-    </a>
-    @if (User.IsInRole("Admin"))
+    @if (Model.CanEdit)
+    {
+        <a href=@Url.Action("Edit", new { id = Model.Id }) title="Edit Project">
+            <i class="fas fa-edit fa-fw"></i> Edit
+        </a>
+    }
+    @if (Model.CanDelete)
     {
         @Html.Raw("&emsp;")
         <a href=@Url.Action("Delete", new { id = Model.Id }) title="Delete Project">
@@ -128,7 +131,7 @@
         </a>
     }
 
-    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+    @if (Model.CanAssign)
     {
         @Html.Raw("&emsp;")
         <a href="#" id="enableAssignment">
@@ -154,7 +157,7 @@
     }
 </div>
 
-@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+@if (Model.CanAssign)
 {
     @section Scripts {
         <script type="text/javascript">

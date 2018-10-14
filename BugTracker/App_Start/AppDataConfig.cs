@@ -23,13 +23,22 @@ namespace BugTracker
             "Create Projects",
             "Edit All Projects",
             "Edit Own Projects",
-            "Archive All Projects",
-            "Archive Own Projects",
             "Assign All Projects",
             "Assign Own Projects",
+            "Delete Projects",
             "Assign Tickets",
             "Create Tickets",
-            "Edit Tickets"
+            "List All Tickets",
+            "List Projects Tickets",
+            "List Assigned Tickets",
+            "List Created Tickets",
+            "Edit All Tickets",
+            "Edit Projects Tickets",
+            "Edit Assigned Tickets",
+            "Edit Created Tickets",
+            "Edit Ticket Status",
+            "Receive Tickets",
+            "Delete Tickets",
         };
 
         public static IReadOnlyDictionary<string, IReadOnlyList<string>> RolePermissions = new Dictionary<string, IReadOnlyList<string>>
@@ -40,31 +49,42 @@ namespace BugTracker
                 "View All Projects",
                 "Create Projects",
                 "Edit All Projects",
-                "Archive All Projects",
                 "Assign All Projects",
-                "Edit Tickets",
-                "Assign Tickets"
+                "Delete Projects",
+                "Assign Tickets",
+                "List All Tickets",
+                "Edit All Tickets",
+                "Edit Ticket Status",
+                "Delete Tickets",
             },
             ["Project Manager"] = new List<string>
             {
                 "View All Projects",
                 "Create Projects",
                 "Edit All Projects",
-                "Archive All Projects",
                 "Assign All Projects",
-                "Edit Tickets",
-                "Assign Tickets"
+                "Assign Tickets",
+                "List All Tickets",
+                "List Projects Tickets",
+                "Edit Projects Tickets",
+                "Edit Ticket Status",
             },
             ["Developer"] = new List<string>
             {
                 "View Own Projects",
-                "Edit Tickets"
+                "List All Tickets",
+                "List Projects Tickets",
+                "List Assigned Tickets",
+                "Edit Assigned Tickets",
+                "Receive Tickets",
             },
             ["Submitter"] = new List<string>
             {
                 "View Own Projects",
                 "Create Tickets",
-                "Edit Tickets"
+                "List All Tickets",
+                "List Created Tickets",
+                "Edit Created Tickets",
             }
         };
 
@@ -92,7 +112,5 @@ namespace BugTracker
             "High",
             "Urgent"
         };
-
-
     }
 }

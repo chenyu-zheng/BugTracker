@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BugTracker.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Web.Mvc;
 
 namespace BugTracker.ViewModels
 {
-    public class TicketViewModel
+    public class TicketViewModel : ITicketItem
     {
         public int Id { get; set; }
         public string Subject { get; set; }
@@ -31,14 +32,14 @@ namespace BugTracker.ViewModels
         public int NumberOfAttachments { get; set; }
         [Display(Name = "Comments")]
         public int NumberOfComments { get; set; }
-        public bool CanViewDetails { get; set; }
+        public bool CanEdit { get; set; }
         public int ProjectId { get; set; }
         public string AssigneeId { get; set; }
         public string AuthorId { get; set; }
 
         public TicketViewModel()
         {
-            CanViewDetails = false;
+            CanEdit = false;
         }
     }
 
@@ -51,6 +52,14 @@ namespace BugTracker.ViewModels
         public DateTimeOffset? DueDate { get; set; }
         public List<AttachmentViewModel> Attachments { get; set; }
         public List<CommentViewModel> Comments { get; set; }
+        public bool CanAssign { get; set; }
+        public bool CanDelete { get; set; }
+
+        public TicketDetailsViewModel()
+        {
+            CanAssign = false;
+            CanDelete = false;
+        }
     }
 
     public class AttachmentViewModel
@@ -85,9 +94,11 @@ namespace BugTracker.ViewModels
         [Display(Name = "Assign To")]
         public string AssigneeId { get; set; }
         public IEnumerable<SelectListItem> AssigneeList { get; set; }
+        public bool CanAssign { get; set; }
 
         public CreateTicketViewModel()
         {
+            CanAssign = false;
             AssigneeList = new HashSet<SelectListItem>();
         }
     }
@@ -104,7 +115,7 @@ namespace BugTracker.ViewModels
         public string Description { get; set; }
         [Required]
         [Display(Name = "Project")]
-        public int? ProjectId { get; set; }
+        public int ProjectId { get; set; }
         public IEnumerable<SelectListItem> ProjectList { get; set; }
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
@@ -115,5 +126,11 @@ namespace BugTracker.ViewModels
         [Display(Name = "Status")]
         public int StatusId { get; set; }
         public IEnumerable<SelectListItem> StatusList { get; set; }
+        public bool CanEditStatus { get; set; }
+
+        public EditTicketViewModel()
+        {
+            CanEditStatus = false;
+        }
     }
 }

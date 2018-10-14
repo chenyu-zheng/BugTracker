@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
 
-                                @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                                @if (Model.CanAssign)
                                 {
                                     <div class="form-group">
                                         @Html.LabelFor(m => m.AssigneeId, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -103,7 +103,7 @@
             });
         });
     </script>
-    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+    @if (Model.CanAssign)
     {
         <script type="text/javascript">
             $("#ProjectId").ready(() => showValue($("#ProjectId").val(), "@Model.AssigneeId"));

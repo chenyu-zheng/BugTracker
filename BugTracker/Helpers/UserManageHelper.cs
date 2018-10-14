@@ -1,4 +1,5 @@
 ﻿using BugTracker.Models;
+using BugTracker.Models.Interfaces;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
@@ -98,6 +99,18 @@ namespace BugTracker.Helpers
             {
                 return false;
             }
+        }
+
+        public bool CanEditTicket(string userId, ITicketItem ticket)
+        {
+            if (HasPermission(userId, "Edit All Tickets") ||
+                    HasPermission(userId, "Edit Projects Tickets") && IsProjectMember(userId, ticket.ProjectId) ||
+                    HasPermission(userId, "Edit Assigned Tickets") && ticket.AssigneeId == userId ||
+                    HasPermission(userId, "Edit Created Tickets") && ticket.AuthorId == userId)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

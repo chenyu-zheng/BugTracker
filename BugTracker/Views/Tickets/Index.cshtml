@@ -63,7 +63,7 @@
                             {
                                 <tr>
                                     <td>
-                                        @if (item.CanViewDetails)
+                                        @if (item.CanEdit)
                                         {
                                             <a href="@Url.Action("Details", new { id = item.Id })">
                                                 @Html.Raw(item.Id.ToString("D4"))
@@ -75,7 +75,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @if (item.CanViewDetails)
+                                        @if (item.CanEdit)
                                         {
                                             <a href="@Url.Action("Details", new { id = item.Id })">
                                                 @Html.DisplayFor(m => item.Subject)
@@ -87,7 +87,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @if (item.CanViewDetails)
+                                        @if (item.CanEdit)
                                         {
                                             <a href=@Url.Action("Edit", new { id = item.Id }) title="Edit Ticket">
                                                 <i class="fas fa-edit"></i>

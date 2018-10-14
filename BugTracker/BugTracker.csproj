@@ -215,6 +215,7 @@
     <Compile Include="Helpers\MappingConfig.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Helpers\UserManageHelper.cs" />
+    <Compile Include="Helpers\ViewModelHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\PermissionConfig.cs" />
     <Compile Include="Migrations\RoleConfig.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\Extensions\IdentityExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Interfaces\TicketInterfaces.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\TicketRevisionDetail.cs" />
