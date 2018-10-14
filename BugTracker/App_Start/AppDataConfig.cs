@@ -28,7 +28,8 @@ namespace BugTracker
             "Assign All Projects",
             "Assign Own Projects",
             "Assign Tickets",
-            "Create Tickets"
+            "Create Tickets",
+            "Edit Tickets"
         };
 
         public static IReadOnlyDictionary<string, IReadOnlyList<string>> RolePermissions = new Dictionary<string, IReadOnlyList<string>>
@@ -40,7 +41,9 @@ namespace BugTracker
                 "Create Projects",
                 "Edit All Projects",
                 "Archive All Projects",
-                "Assign All Projects"
+                "Assign All Projects",
+                "Edit Tickets",
+                "Assign Tickets"
             },
             ["Project Manager"] = new List<string>
             {
@@ -48,16 +51,20 @@ namespace BugTracker
                 "Create Projects",
                 "Edit All Projects",
                 "Archive All Projects",
-                "Assign All Projects"
+                "Assign All Projects",
+                "Edit Tickets",
+                "Assign Tickets"
             },
             ["Developer"] = new List<string>
             {
-                "View Own Projects"
+                "View Own Projects",
+                "Edit Tickets"
             },
             ["Submitter"] = new List<string>
             {
                 "View Own Projects",
-                "Create Tickets"
+                "Create Tickets",
+                "Edit Tickets"
             }
         };
 

@@ -1,5 +1,4 @@
-﻿@model BugTracker.Models.Ticket
-
+﻿@model BugTracker.ViewModels.TicketDetailsViewModel
 @{
     ViewBag.Title = "Delete";
 }
@@ -12,101 +11,132 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.AssignedToUser.DisplayName)
+            @Html.DisplayNameFor(m => m.Id)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
+            @Html.DisplayFor(m => m.Id)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Author.DisplayName)
+            @Html.DisplayNameFor(m => m.Subject)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Author.DisplayName)
+            @Html.DisplayFor(m => m.Subject)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Category.Name)
+            @Html.DisplayNameFor(m => m.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Category.Name)
+            @Html.Raw(Model.Description)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Priority.Name)
+            @Html.DisplayNameFor(m => m.Created)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Priority.Name)
+            @Html.DisplayFor(m => m.Created)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Project.Name)
+            @Html.DisplayNameFor(m => m.Updated)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Project.Name)
+            @Html.DisplayFor(m => m.Updated)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Status.Name)
+            @Html.DisplayNameFor(m => m.ProjectName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Status.Name)
+            @Html.DisplayFor(m => m.ProjectName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Subject)
+            @Html.DisplayNameFor(m => m.StartDate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Subject)
+            @Html.DisplayFor(m => m.StartDate)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(m => m.DueDate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(m => m.DueDate)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Created)
+            @Html.DisplayNameFor(m => m.CategoryName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Created)
+            @Html.DisplayFor(m => m.CategoryName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Updated)
+            @Html.DisplayNameFor(m => m.StatusName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Updated)
+            @Html.DisplayFor(m => m.StatusName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
+            @Html.DisplayNameFor(m => m.PriorityName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.StartDate)
+            @Html.DisplayFor(m => m.PriorityName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.DueDate)
+            @Html.DisplayNameFor(m => m.AuthorName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DueDate)
+            @Html.DisplayFor(m => m.AuthorName)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(m => m.AssigneeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.AssigneeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.NumberOfComments)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.NumberOfComments)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.NumberOfAttachments)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.NumberOfAttachments)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.NumberOfRevisions)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.NumberOfRevisions)
+        </dd>
     </dl>
 
     @using (Html.BeginForm()) {

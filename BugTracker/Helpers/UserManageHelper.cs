@@ -55,16 +55,49 @@ namespace BugTracker.Helpers
             return results;
         }
 
+        public bool HasRole(string userId, string roleName)
+        {
+            try
+            {
+                return userManager.GetRoles(userId).Contains(roleName);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public bool HasPermission(string userId, string permission)
         {
-            var userRoles = RoleList(userId);
-            var userPermissions = db.Roles
-                .Where(r => userRoles.Contains(r.Name))
-                .SelectMany(r => r.Permissions, (r, p) => p.Name)
-                .Distinct()
-                .ToList();
+            try
+            {
+                var userRoles = RoleList(userId);
+                var userPermissions = db.Roles
+                    .Where(r => userRoles.Contains(r.Name))
+                    .SelectMany(r => r.Permissions, (r, p) => p.Name)
+                    .Distinct()
+                    .ToList();
 
-            return userPermissions.Contains(permission);
+                return userPermissions.Contains(permission);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool IsProjectMember(string userId, int projectId)
+        {
+            try
+            {
+                return db.Users
+                    .Any(u => u.Id == userId &&
+                        u.Projects.Any(p => p.Id == projectId));
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

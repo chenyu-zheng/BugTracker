@@ -10,13 +10,7 @@ namespace BugTracker.Models
     public class Ticket
     {
         public int Id { get; set; }
-        [Required]
-        [StringLength(100, MinimumLength = 4, ErrorMessage = "The {0} must be between {2} and {1} characters.")]
-        [RegularExpression(@".*[a-zA-Z]+.*", ErrorMessage = "The {0} must contain at least one letter.")]
         public string Subject { get; set; }
-        [AllowHtml]
-        [Required]
-        [StringLength(5000, MinimumLength = 1, ErrorMessage = "The {0} cannot exceed {2} characters.")]
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }

@@ -13,6 +13,8 @@ namespace BugTracker.Helpers
         public static MapperConfiguration Config = new MapperConfiguration(cfg => {
             cfg.AddProfile<TicketProfile>();
             cfg.AddProfile<TicketDetailsProfile>();
+            cfg.AddProfile<CreateTicketProfile>();
+            cfg.AddProfile<EditTicketProfile>();
         });
     }
 
@@ -43,6 +45,23 @@ namespace BugTracker.Helpers
                 .ForMember(dest => dest.NumberOfComments, opt => opt.MapFrom(src => src.Comments.Count()))
                 .ForMember(dest => dest.Attachments, opt => new HashSet<AttachmentViewModel>())
                 .ForMember(dest => dest.Comments, opt => new HashSet<CommentViewModel>());
+        }
+    }
+
+    public class CreateTicketProfile : Profile
+    {
+        public CreateTicketProfile()
+        {
+            CreateMap<CreateTicketViewModel, Ticket>();
+        }
+    }
+
+    public class EditTicketProfile : Profile
+    {
+        public EditTicketProfile()
+        {
+            CreateMap<EditTicketViewModel, Ticket>();
+            CreateMap<Ticket, EditTicketViewModel>();
         }
     }
 }

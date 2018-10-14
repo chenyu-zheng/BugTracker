@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace BugTracker.ViewModels
 {
@@ -52,5 +53,52 @@ namespace BugTracker.ViewModels
     public class CommentViewModel
     {
 
+    }
+
+    public class CreateTicketViewModel
+    {
+        [Required]
+        [StringLength(100, MinimumLength = 4, ErrorMessage = "The {0} must be between {2} and {1} characters.")]
+        public string Subject { get; set; }
+        [AllowHtml]
+        [Required]
+        [StringLength(5000, MinimumLength = 1, ErrorMessage = "The {0} cannot exceed {2} characters.")]
+        public string Description { get; set; }
+        [Required]
+        public int? ProjectId { get; set; }
+        public IEnumerable<SelectListItem> ProjectList { get; set; }
+        public int CategoryId { get; set; }
+        public IEnumerable<SelectListItem> CategoryList { get; set; }
+        public int PriorityId { get; set; }
+        public IEnumerable<SelectListItem> PriorityList { get; set; }
+        [Display(Name = "Assign To")]
+        public string AssigneeId { get; set; }
+        public IEnumerable<SelectListItem> AssigneeList { get; set; }
+
+        public CreateTicketViewModel()
+        {
+            AssigneeList = new HashSet<SelectListItem>();
+        }
+    }
+
+    public class EditTicketViewModel
+    {
+        public int Id { get; set; }
+        [Required]
+        [StringLength(100, MinimumLength = 4, ErrorMessage = "The {0} must be between {2} and {1} characters.")]
+        public string Subject { get; set; }
+        [AllowHtml]
+        [Required]
+        [StringLength(5000, MinimumLength = 1, ErrorMessage = "The {0} cannot exceed {2} characters.")]
+        public string Description { get; set; }
+        [Required]
+        public int? ProjectId { get; set; }
+        public IEnumerable<SelectListItem> ProjectList { get; set; }
+        public int CategoryId { get; set; }
+        public IEnumerable<SelectListItem> CategoryList { get; set; }
+        public int PriorityId { get; set; }
+        public IEnumerable<SelectListItem> PriorityList { get; set; }
+        public int StatusId { get; set; }
+        public IEnumerable<SelectListItem> StatusList { get; set; }
     }
 }
