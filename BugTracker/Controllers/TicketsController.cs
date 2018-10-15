@@ -361,17 +361,23 @@ namespace BugTracker.Controllers
             var roleIds = db.Roles
                 .Where(r => r.Permissions.Any(p => p.Name == "Receive Tickets"))
                 .Select(r => r.Id);
-            var data = db.Users
+            if (!roleIds.Any())
+            {
+                return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+            }
+            var users = db.Users
                 .Where(u =>
                     u.Projects.Any(p => p.Id == projectId) &&
                     u.Roles.Any(ur => roleIds.Contains(ur.RoleId)))
                 .Select(u => new { u.Id, u.DisplayName })
                 .ToList();
-            if (data.Any())
+            if (!users.Any())
             {
-                return Json(new { data }, JsonRequestBehavior.AllowGet);
+                return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
             }
-            return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+            var helper = new UserManageHelper();
+            var data = users.Select(u => new { u.Id, u.DisplayName, Roles = helper.RoleList(u.Id) });
+            return Json(new { data }, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

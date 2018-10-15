@@ -14,8 +14,8 @@
     <div class="col-md-6">
         <div class="panel panel-info">
             <div class="panel-heading">
-                [@Html.DisplayFor(m => m.Project.Name)]&nbsp;
-                @Html.DisplayNameFor(m => m.Members)
+                @Html.DisplayNameFor(m => m.Members)&nbsp;
+                [@Html.DisplayFor(m => m.Project.Name)]
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -24,16 +24,18 @@
                         <thead>
                             <tr>
                                 <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().DisplayName)</th>
-                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().UserName)</th>
+                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().Roles)</th>
                                 <th>&emsp;&emsp;</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model.Members)
                             {
-                                <tr>
+                                <tr title="@Html.DisplayNameFor(m => item.UserName): @Html.DisplayFor(m => item.UserName)">
                                     <td>@Html.DisplayFor(m => item.DisplayName)</td>
-                                    <td>@Html.DisplayFor(m => item.UserName)</td>
+                                    <td>
+                                        @string.Join(", ", item.Roles.Where(r => r.Value).Select(r => r.Key).ToArray())
+                                    </td>
                                     <td>@Html.ActionLink("Remove", "RemoveMember", new { projectId = Model.Project.Id, userId = item.Id })</td>
                                 </tr>
                             }
@@ -57,17 +59,19 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().DisplayName)</th>
-                                <th>@Html.DisplayNameFor(m => m.Members.FirstOrDefault().UserName)</th>
+                                <th>@Html.DisplayNameFor(m => m.Users.FirstOrDefault().DisplayName)</th>
+                                <th>@Html.DisplayNameFor(m => m.Users.FirstOrDefault().Roles)</th>
                                 <th>&emsp;&emsp;</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model.Users)
                             {
-                                <tr>
+                                <tr title="@Html.DisplayNameFor(m => item.UserName): @Html.DisplayFor(m => item.UserName)">
                                     <td>@Html.DisplayFor(m => item.DisplayName)</td>
-                                    <td>@Html.DisplayFor(m => item.UserName)</td>
+                                    <td>
+                                        @string.Join(", ", item.Roles.Where(r => r.Value).Select(r => r.Key).ToArray())
+                                    </td>
                                     <td>@Html.ActionLink("Add", "AddMember", new { projectId = Model.Project.Id, userId = item.Id })</td>
                                 </tr>
                             }

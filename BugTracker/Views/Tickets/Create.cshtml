@@ -116,7 +116,7 @@
                     $.getJSON('@Url.Action("GetAssigneeList", "Tickets")' + "?projectId=" + projectId, (result) => {
                         const data = result.data;
                         for (const item of data) {
-                            $("#AssigneeId").append(`<option value="${item.Id}">${item.DisplayName}</option>`)
+                            $("#AssigneeId").append(`<option value="${item.Id}">${item.DisplayName}&emsp;(${item.Roles.join(", ")})</option>`)
                             item.Id == selectedVal && $("#AssigneeId").val(selectedVal);
                         }
                     });

@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using BlogApp.Helpers;
-using BugTracker.ActionFilters;
 using BugTracker.Helpers;
+using BugTracker.ActionFilters;
 using BugTracker.Models;
 using BugTracker.ViewModels;
 using Microsoft.AspNet.Identity;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
+using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
@@ -28,17 +28,8 @@ namespace BugTracker.Controllers
                 query = query.Where(p => p.Archived == archived);
             }
             var model = query
-                .Select(p => new ProjectViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Identifier = p.Identifier,
-                    Created = p.Created,
-                    Updated = p.Updated,
-                    NumberOfMembers = p.Members.Count(),
-                    NumberOfTickets = p.Tickets.Count()
-                }).ToList();
+                .ProjectTo<ProjectViewModel>(MappingConfig.Config)
+                .ToList();
             ViewBag.Type = "All";
             return View("List", model);
         }
@@ -55,17 +46,8 @@ namespace BugTracker.Controllers
                 query = query.Where(p => p.Archived == archived);
             }
             var model = query
-                .Select(p => new ProjectViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Identifier = p.Identifier,
-                    Created = p.Created,
-                    Updated = p.Updated,
-                    NumberOfMembers = p.Members.Count(),
-                    NumberOfTickets = p.Tickets.Count()
-                }).ToList();
+                .ProjectTo<ProjectViewModel>(MappingConfig.Config)
+                .ToList();
             ViewBag.Type = "My";
             return View("List", model);
         }
@@ -86,17 +68,7 @@ namespace BugTracker.Controllers
             }
             
             var model = query
-                .Select(p => new ProjectViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Identifier = p.Identifier,
-                    Created = p.Created,
-                    Updated = p.Updated,
-                    NumberOfMembers = p.Members.Count(),
-                    NumberOfTickets = p.Tickets.Count()
-                })
+                .ProjectTo<ProjectViewModel>(MappingConfig.Config)
                 .FirstOrDefault(p => p.Id == id);
 
             if (model == null)
@@ -206,7 +178,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Delete/5
-        [Authorize(Roles = "Admin")]
+        [PermissionAuthorize("Delete Projects")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -215,17 +187,7 @@ namespace BugTracker.Controllers
             }
 
             var model = db.Projects
-                .Select(p => new ProjectViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Identifier = p.Identifier,
-                    Created = p.Created,
-                    Updated = p.Updated,
-                    NumberOfMembers = p.Members.Count(),
-                    NumberOfTickets = p.Tickets.Count()
-                })
+                .ProjectTo<ProjectViewModel>(MappingConfig.Config)
                 .FirstOrDefault(p => p.Id == id);
 
             if (model == null)
@@ -238,7 +200,7 @@ namespace BugTracker.Controllers
         // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [PermissionAuthorize("Delete Projects")]
         public ActionResult DeleteConfirmed(int id)
         {
             Project project = db.Projects.Find(id);
@@ -255,45 +217,27 @@ namespace BugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var model = db.Projects
-                .Where(p => p.Id == id)
+            var project = db.Projects
                 .Include(p => p.Members)
-                .Select(p => new ChangeMemberViewModel
-                {
-                    Project = new ProjectViewModel
-                    {
-                        Id = p.Id,
-                        Name = p.Name,
-                        Description = p.Description,
-                        Identifier = p.Identifier,
-                        Created = p.Created,
-                        Updated = p.Updated,
-                        NumberOfMembers = p.Members.Count(),
-                    },
-
-                    Members = p.Members.Select(m => new UserViewModel
-                    {
-                        Id = m.Id,
-                        UserName = m.UserName,
-                        DisplayName = m.DisplayName
-                    }).ToList(),
-
-                    Users = db.Users
-                    .Where(u => !p.Members.Any(m => m.Id == u.Id))
-                    .Select(u => new UserViewModel
-                    {
-                        Id = u.Id,
-                        UserName = u.UserName,
-                        DisplayName = u.DisplayName
-                    }).ToList()
-                })
-                .FirstOrDefault();
-
-            if (model == null)
+                .FirstOrDefault(p => p.Id == id);
+            if (project == null)
             {
                 return HttpNotFound();
             }
+            var users = db.Users
+                .Where(u => !u.Projects.Any(p => p.Id == id));
 
+            IMapper mapper = new Mapper(MappingConfig.Config);
+            var model = new ChangeMemberViewModel
+            {
+                Project = mapper.Map<Project, ProjectViewModel>(project),
+                Members = mapper.Map<IEnumerable<ApplicationUser>, List<UserRoleViewModel>>(project.Members),
+                Users = mapper.Map<IEnumerable<ApplicationUser>, List<UserRoleViewModel>>(users)
+            };
+
+            var helper = new UserManageHelper();
+            model.Members.ForEach(m => m.Roles = helper.RoleDictionary(m.Id));
+            model.Users.ForEach(m => m.Roles = helper.RoleDictionary(m.Id));
             return View(model);
         }
 

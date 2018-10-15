@@ -19,12 +19,17 @@ namespace BugTracker.ViewModels
         public int NumberOfMembers { get; set; }
         [Display(Name = "Tickets")]
         public int NumberOfTickets { get; set; }
+
+        public ProjectViewModel()
+        {
+            Archived = false;
+        }
     }
 
     public class ChangeMemberViewModel
     {
         public ProjectViewModel Project { get; set; }
-        public List<UserViewModel> Members { get; set; }
-        public List<UserViewModel> Users { get; set; }
+        public List<UserRoleViewModel> Members { get; set; }
+        public List<UserRoleViewModel> Users { get; set; }
     }
 }

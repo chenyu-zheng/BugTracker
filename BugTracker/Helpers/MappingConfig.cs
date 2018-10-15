@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BugTracker.Models;
+using BugTracker.Models.Interfaces;
 using BugTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,28 @@ namespace BugTracker.Helpers
             cfg.AddProfile<TicketDetailsProfile>();
             cfg.AddProfile<CreateTicketProfile>();
             cfg.AddProfile<EditTicketProfile>();
+            cfg.AddProfile<UserProfile>();
+            cfg.AddProfile<ProjectProfile>();
         });
+    }
+
+    public class UserProfile : Profile
+    {
+        public UserProfile()
+        {
+            CreateMap<IUserItem, UserViewModel>();
+            CreateMap<IUserItem, UserRoleViewModel>();
+        }
+    }
+
+    public class ProjectProfile : Profile
+    {
+        public ProjectProfile()
+        {
+            CreateMap<Project, ProjectViewModel>()
+                .ForMember(dest => dest.NumberOfMembers, opt => opt.MapFrom(src => src.Members.Count()))
+                .ForMember(dest => dest.NumberOfTickets, opt => opt.MapFrom(src => src.Tickets.Count()));
+        }
     }
 
     public class TicketProfile : Profile

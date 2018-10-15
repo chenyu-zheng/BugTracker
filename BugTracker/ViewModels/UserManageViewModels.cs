@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BugTracker.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Web;
 
 namespace BugTracker.ViewModels
 {
-    public class UserViewModel
+    public class UserViewModel : IUserItem
     {
         public string Id { get; set; }
         [Display(Name = "User Name")]
