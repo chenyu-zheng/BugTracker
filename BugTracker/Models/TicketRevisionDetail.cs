@@ -11,7 +11,7 @@ namespace BugTracker.Models
         public string Property { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
-        public int TicketId { get; set; }
-        public virtual Ticket Ticket { get; set; }
+        public int RevisionId { get; set; }
+        public virtual TicketRevision Revision { get; set; }
     }
 }

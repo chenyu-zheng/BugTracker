@@ -272,8 +272,13 @@ namespace BugTracker.Controllers
             {
                 ticketDb.StatusId = model.StatusId;
             }
-            ticketDb.Updated = DateTime.Now;
-            db.Entry(ticketDb).State = EntityState.Modified;
+            ticketDb.Updated = DateTimeOffset.Now;
+            var revHelper = new TicketRevisionHelper(db);
+            var revision = revHelper.CreateRevision(ticketDb, userId);
+            if (revision != null)
+            {
+                db.TicketRevisions.Add(revision);
+            }
             db.SaveChanges();
             return RedirectToAction("Details", new { id = ticketDb.Id });
         }
@@ -349,7 +354,12 @@ namespace BugTracker.Controllers
                     ticket.Status = db.TicketStatus.FirstOrDefault(s => s.Name == "Assigned");
                 }
                 ticket.Updated = DateTime.Now;
-                db.Entry(ticket).State = EntityState.Modified;
+                var revHelper = new TicketRevisionHelper(db);
+                var revision = revHelper.CreateRevision(ticket, User.Identity.GetUserId());
+                if (revision != null)
+                {
+                    db.TicketRevisions.Add(revision);
+                }
                 db.SaveChanges();
             }
             return RedirectToAction("Details", new { id });

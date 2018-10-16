@@ -45,6 +45,8 @@ namespace BugTracker.Models
         public DbSet<TicketStatus> TicketStatus { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<TicketRevision> TicketRevisions { get; set; }
+        public DbSet<TicketRevisionDetail> TicketRevisionDetails { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection")
