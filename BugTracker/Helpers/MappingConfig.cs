@@ -65,8 +65,13 @@ namespace BugTracker.Helpers
                 .ForMember(dest => dest.NumberOfRevisions, opt => opt.MapFrom(src => src.Revisions.Count()))
                 .ForMember(dest => dest.NumberOfAttachments, opt => opt.MapFrom(src => src.Attachments.Count()))
                 .ForMember(dest => dest.NumberOfComments, opt => opt.MapFrom(src => src.Comments.Count()))
+                // TODO: Replace this line when attachment is done
                 .ForMember(dest => dest.Attachments, opt => new HashSet<AttachmentViewModel>())
+                // TODO: Replace this line when comment is done
                 .ForMember(dest => dest.Comments, opt => new HashSet<CommentViewModel>());
+            //.ForMember(dest => dest.Revisions, opt => opt.MapFrom(src => src.Revisions));
+            CreateMap<TicketRevision, TicketRevisionViewModel>();
+            CreateMap<TicketRevisionDetail, TicketRevisionDetailViewModel>();
         }
     }
 

@@ -134,7 +134,7 @@
     @if (Model.CanAssign)
     {
         @Html.Raw("&emsp;")
-        <a href="#" id="enableAssignment">
+        <a class="btn btn-link" id="enableAssignment">
             <i class="fas fa-user-tag fa-fw"></i> Assign To
         </a>
         using (Html.BeginForm("Assign", "Tickets", FormMethod.Post,
@@ -155,6 +155,15 @@
             </div>
         }
     }
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        @Html.Partial("_HistoryListPartial", Model.Revisions)
+    </div>
+    <div class="col-md-6">
+
+    </div>
 </div>
 
 @if (Model.CanAssign)

@@ -98,11 +98,12 @@ namespace BugTracker.Controllers
                 .FirstOrDefault();
 
             var userId = User.Identity.GetUserId();
-            var helper = new UserManageHelper();
+            var helper = new UserManageHelper(db);
             if (model == null || !helper.CanEditTicket(userId, model))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            model = new ViewModelHelper(db).ReformTicketRevisions(model);
             model.CanEdit = true;
             model.CanAssign = helper.HasPermission(userId, "Assign Tickets");
             model.CanDelete = helper.HasPermission(userId, "Delete Tickets");

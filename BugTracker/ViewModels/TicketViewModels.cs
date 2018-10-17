@@ -54,11 +54,15 @@ namespace BugTracker.ViewModels
         public List<CommentViewModel> Comments { get; set; }
         public bool CanAssign { get; set; }
         public bool CanDelete { get; set; }
+        public List<TicketRevisionViewModel> Revisions { get; set; }
 
         public TicketDetailsViewModel()
         {
             CanAssign = false;
             CanDelete = false;
+            Attachments = new List<AttachmentViewModel>();
+            Comments = new List<CommentViewModel>();
+            Revisions = new List<TicketRevisionViewModel>();
         }
     }
 
@@ -70,6 +74,20 @@ namespace BugTracker.ViewModels
     public class CommentViewModel
     {
 
+    }
+    
+    public class TicketRevisionViewModel
+    {
+        public string UserDisplayName { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public List<TicketRevisionDetailViewModel> Details { get; set; }
+    }
+
+    public class TicketRevisionDetailViewModel
+    {
+        public string Property { get; set; }
+        public string OldValue { get; set; }
+        public string NewValue { get; set; }
     }
 
     public class CreateTicketViewModel

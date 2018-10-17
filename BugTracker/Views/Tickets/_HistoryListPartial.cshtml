@@ -1,0 +1,91 @@
+﻿@model IEnumerable<BugTracker.ViewModels.TicketRevisionViewModel>
+
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        Change Histories
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <ul class="chat">
+            @foreach (var revision in Model)
+            {
+                <li class="clearfix">
+                    <div class="header">
+                        <strong class="primary-font">@Html.DisplayFor(m => revision.UserDisplayName)</strong>
+                        <small class="pull-right text-muted">
+                            <i class="fa fa-clock-o fa-fw"></i>@Html.Raw(revision.Created.ToString("yy-MM-dd HH:mm"))
+                        </small>
+                    </div>
+
+                    @foreach (var detail in revision.Details)
+                    {
+                        <div class="break-word">
+                            @if (detail.Property == "Description")
+                            {
+                                @Html.Raw("Modified Description  ")<a class="collapsible btn btn-link">View Old Content</a>
+                                <div class="content" style="display: none">
+                                    @Html.Raw(detail.OldValue)
+                                    <br />
+                                </div>
+                            }
+                            else if (detail.Property == "Assignee")
+                            {
+                                if (!string.IsNullOrWhiteSpace(detail.OldValue))
+                                {
+                                    @Html.Raw($"De-assigned from <i>{detail.OldValue}</i>")<br />
+                                }
+                                if (!string.IsNullOrWhiteSpace(detail.NewValue))
+                                {
+                                    @Html.Raw($"Assigned to <i>{detail.NewValue}</i>")
+                                }
+                            }
+                            else
+                            {
+                                @Html.Raw($"Modified {detail.Property} from <i>{detail.OldValue}</i> to <i>{detail.NewValue}</i>")
+                            }
+                        </div>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    const btns = document.querySelectorAll(".collapsible");
+    const showContent = () => {
+
+    };
+    document.addEventListener("DOMContentLoaded", () => {
+        btns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (btn.nextElementSibling.style["display"] == "none") {
+                    btn.textContent = "Hide Old Content";
+                    btn.nextElementSibling.style["display"] = "block";
+                } else {
+                    btn.textContent = "Show Old Content";
+                    btn.nextElementSibling.style["display"] = "none";
+                }
+            })
+        })
+    });
+
+    //console.log('foo');
+    //$(document).ready(() => {
+    //    $(".collapsible").each((_, e) => {
+    //        console.log($(this));
+    //        e.click(() => {
+    //            console.log(e.next());
+    //            e.next().is(':visible');
+    //            if (e.next().is(':visible')) {
+    //                e.next().hide();
+    //            } else {
+    //                e.next().show();
+    //            }
+    //        })
+    //    })
+    //})
+
+</script>
