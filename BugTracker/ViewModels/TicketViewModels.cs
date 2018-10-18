@@ -51,7 +51,6 @@ namespace BugTracker.ViewModels
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? DueDate { get; set; }
         public List<AttachmentViewModel> Attachments { get; set; }
-        public List<CommentViewModel> Comments { get; set; }
         public bool CanAssign { get; set; }
         public bool CanDelete { get; set; }
         public List<TicketRevisionViewModel> Revisions { get; set; }
@@ -61,17 +60,11 @@ namespace BugTracker.ViewModels
             CanAssign = false;
             CanDelete = false;
             Attachments = new List<AttachmentViewModel>();
-            Comments = new List<CommentViewModel>();
             Revisions = new List<TicketRevisionViewModel>();
         }
     }
 
     public class AttachmentViewModel
-    {
-
-    }
-
-    public class CommentViewModel
     {
 
     }

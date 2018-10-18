@@ -112,5 +112,15 @@ namespace BugTracker.Helpers
             }
             return false;
         }
+
+        public bool CanEditComment(string userId, int commentId)
+        {
+            return HasPermission(userId, "Edit All Comments") ||
+                   HasPermission(userId, "Edit Created Comments") && 
+                        db.Comments.Any(c => c.Id == commentId && c.AuthorId == userId) ||
+                   HasPermission(userId, "Edit Projects Comments") &&
+                        db.Comments.Any(c => c.Id == commentId && c.Ticket.Project.Members.Any(m => m.Id == userId));
+                
+        }
     }
 }

@@ -149,14 +149,22 @@ namespace BugTracker.Helpers
             }
         }
 
+        public static string RemoveHtml(string htmlString)
+        {
+            if (string.IsNullOrWhiteSpace(htmlString))
+            {
+                return htmlString;
+            }
+            return HttpUtility.HtmlDecode(Regex.Replace(htmlString, "<[^>]*(>|$)", string.Empty));
+        }
+
         public static string GenerateSnippet(string htmlString, int length)
         {
             if (string.IsNullOrWhiteSpace(htmlString))
             {
-                return null;
+                return htmlString;
             }
-
-            string text = HttpUtility.HtmlDecode(Regex.Replace(htmlString, "<[^>]*(>|$)", string.Empty));
+            string text = RemoveHtml(htmlString);
 
             return text.Substring(0, length > text.Length? text.Length : length) + "...";
         }

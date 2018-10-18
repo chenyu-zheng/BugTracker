@@ -105,14 +105,5 @@ namespace BugTracker.Helpers
             }
             return viewModel;
         }
-
-        public static string RemoveHtml(string htmlString)
-        {
-            if (string.IsNullOrWhiteSpace(htmlString))
-            {
-                return htmlString;
-            }
-            return HttpUtility.HtmlDecode(Regex.Replace(htmlString, "<[^>]*(>|$)", string.Empty));
-        }
     }
 }

@@ -47,6 +47,7 @@ namespace BugTracker.Models
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<TicketRevision> TicketRevisions { get; set; }
         public DbSet<TicketRevisionDetail> TicketRevisionDetails { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection")

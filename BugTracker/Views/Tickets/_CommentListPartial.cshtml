@@ -1,0 +1,46 @@
+﻿@model int
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        Comments
+        <a id="CreateComment" class="pull-right btn btn-link">
+            <i class="fas fa-pen fa-fw"></i> New
+        </a>
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+
+        <form id="CreateForm" style="display: none">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="TicketId" name="TicketId" value=@Model class="form-control" />
+            <textarea id="Content" name="Content" rows="5" class="form-control"></textarea>
+            <span id="CreateFormError" class="text-danger"></span>
+            <br />
+            <input id="SubmitBtn" type="submit" value="Submit" class="btn btn-default" />
+            <hr />
+        </form>
+
+        <ul id="CommentList" class="list-unstyled"></ul>
+    </div>
+</div>
+
+<template id="listItem">
+    <li class="comment-list-item">
+        <div class="well">
+            <div class="header">
+                <strong class="primary-font comment-author"></strong>
+                <small class="pull-right text-muted">
+                    <span class="comment-updated"></span>&emsp;<span class="comment-created"></span>
+                </small>
+            </div>
+            <p class="comment-content"></p>
+        </div>
+    </li>
+</template>
+
+<script type="text/javascript">
+    const commentListUrl = '@Url.Action("CommentList", "Comments")';
+    const submitCommentUrl = '@Url.Action("Create", "Comments")';
+    const ticketId= "@Model"
+</script>
+<script type="text/javascript" src="~/Scripts/BugTracker.Comment.js"></script>
+

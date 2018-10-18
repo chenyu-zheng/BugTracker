@@ -18,6 +18,7 @@ namespace BugTracker.Helpers
             cfg.AddProfile<EditTicketProfile>();
             cfg.AddProfile<UserProfile>();
             cfg.AddProfile<ProjectProfile>();
+            cfg.AddProfile<CommentItemProfile>();
         });
     }
 
@@ -66,9 +67,7 @@ namespace BugTracker.Helpers
                 .ForMember(dest => dest.NumberOfAttachments, opt => opt.MapFrom(src => src.Attachments.Count()))
                 .ForMember(dest => dest.NumberOfComments, opt => opt.MapFrom(src => src.Comments.Count()))
                 // TODO: Replace this line when attachment is done
-                .ForMember(dest => dest.Attachments, opt => new HashSet<AttachmentViewModel>())
-                // TODO: Replace this line when comment is done
-                .ForMember(dest => dest.Comments, opt => new HashSet<CommentViewModel>());
+                .ForMember(dest => dest.Attachments, opt => new HashSet<AttachmentViewModel>());
             //.ForMember(dest => dest.Revisions, opt => opt.MapFrom(src => src.Revisions));
             CreateMap<TicketRevision, TicketRevisionViewModel>();
             CreateMap<TicketRevisionDetail, TicketRevisionDetailViewModel>();
@@ -89,6 +88,26 @@ namespace BugTracker.Helpers
         {
             CreateMap<EditTicketViewModel, Ticket>();
             CreateMap<Ticket, EditTicketViewModel>();
+        }
+    }
+
+    public class CommentItemProfile : Profile
+    {
+        public CommentItemProfile()
+        {
+            CreateMap<Comment, CommentItemViewModel>()
+                .ForMember(dest => dest.Created,
+                    opt => opt.ResolveUsing<DateResolver, DateTimeOffset?>(src => src.Created))
+                .ForMember(dest => dest.Updated,
+                    opt => opt.ResolveUsing<DateResolver, DateTimeOffset?>(src => src.Updated));
+        }
+    }
+
+    public class DateResolver : IMemberValueResolver<object, object, DateTimeOffset?, string>
+    {
+        public string Resolve(object src, object dest, DateTimeOffset? srcMember, string destMember, ResolutionContext context)
+        {
+            return srcMember.HasValue ? srcMember.Value.ToString("yy-MM-dd HH:mm") : null;
         }
     }
 }

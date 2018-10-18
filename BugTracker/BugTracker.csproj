@@ -197,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AppDataConfig.cs" />
+    <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Controllers\UserManageController.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
+    <Compile Include="ViewModels\CommentViewModels.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
     <Compile Include="ViewModels\ProjectViewModels.cs" />
     <Compile Include="ViewModels\TicketViewModels.cs" />
@@ -442,6 +444,7 @@
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\brands.js" />
     <Content Include="Scripts\brands.min.js" />
+    <Content Include="Scripts\BugTracker.Comment.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />
@@ -761,9 +764,11 @@
     <Content Include="Views\Projects\_EditEntriesPartial.cshtml" />
     <Content Include="Views\Projects\_EditEntriesDPartial.cshtml" />
     <Content Include="Views\Tickets\_HistoryListPartial.cshtml" />
+    <Content Include="Views\Tickets\_CommentListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Comments\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
