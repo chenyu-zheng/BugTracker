@@ -14,6 +14,7 @@ using AutoMapper.QueryableExtensions;
 using AutoMapper;
 using BugTracker.Helpers;
 using BugTracker.Models.Interfaces;
+using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
@@ -234,7 +235,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PermissionAuthorize("Edit All Tickets, Edit Projects Tickets, Edit Assigned Tickets, Edit Created Tickets")]
-        public ActionResult Edit([Bind(Include = "Id,Subject,Description,ProjectId,CategoryId,StatusId,PriorityId,AssigneeId")] EditTicketViewModel model)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Subject,Description,ProjectId,CategoryId,StatusId,PriorityId,AssigneeId")] EditTicketViewModel model)
         {
             ActionResult modelInvalid()
             {
@@ -282,6 +283,11 @@ namespace BugTracker.Controllers
                 db.TicketRevisions.Add(revision);
             }
             db.SaveChanges();
+            if (revision != null)
+            {
+                var nHelper = new NotificationHelper(db);
+                await nHelper.NotifyTicketChangeAsync(userId, ticketDb);
+            }
             return RedirectToAction("Details", new { id = ticketDb.Id });
         }
 
@@ -319,7 +325,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PermissionAuthorize("Assign Tickets")]
-        public ActionResult Assign(int? id, string assigneeId)
+        public async Task<ActionResult> Assign(int? id, string assigneeId)
         {
             if (id == null)
             {
@@ -363,6 +369,12 @@ namespace BugTracker.Controllers
                     db.TicketRevisions.Add(revision);
                 }
                 db.SaveChanges();
+                if (!string.IsNullOrWhiteSpace(assigneeId))
+                {
+                    var userId = User.Identity.GetUserId();
+                    var nHelper = new NotificationHelper(db);
+                    await nHelper.NotifyTicketAssignmentAsync(userId, ticket);
+                }
             }
             return RedirectToAction("Details", new { id });
         }

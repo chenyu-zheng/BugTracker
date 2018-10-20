@@ -214,6 +214,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\MappingConfig.cs" />
+    <Compile Include="Helpers\NotificationHelper.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Helpers\TicketRevisionHelper.cs" />
     <Compile Include="Helpers\UserManageHelper.cs" />

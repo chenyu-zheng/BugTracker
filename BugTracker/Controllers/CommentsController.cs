@@ -13,6 +13,7 @@ using AutoMapper.QueryableExtensions;
 using BugTracker.Helpers;
 using Microsoft.AspNet.Identity;
 using BugTracker.ActionFilters;
+using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
@@ -26,7 +27,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PermissionAuthorize("Edit All Tickets, Edit Projects Tickets, Edit Assigned Tickets, Edit Created Tickets")]
-        public JsonResult Create([Bind(Include = "Content,TicketId")] CreateCommentViewModel model)
+        public async Task<JsonResult> Create([Bind(Include = "Content,TicketId")] CreateCommentViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -56,6 +57,8 @@ namespace BugTracker.Controllers
             };
             db.Comments.Add(comment);
             db.SaveChanges();
+            var nHelper = new NotificationHelper(db);
+            await nHelper.NotifyTicketCommentAsync(userId, ticket, comment);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
