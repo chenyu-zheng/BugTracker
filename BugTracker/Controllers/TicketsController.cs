@@ -85,6 +85,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Details/5
+        [PermissionAuthorize("Edit All Tickets, Edit Projects Tickets, Edit Assigned Tickets, Edit Created Tickets")]
         public ActionResult Details(int? id)
         {
             if (id == null)

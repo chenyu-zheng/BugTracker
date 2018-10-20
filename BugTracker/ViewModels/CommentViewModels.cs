@@ -29,6 +29,14 @@ namespace BugTracker.ViewModels
         public string AuthorId { get; set; }
     }
 
+    public class EditCommentViewModel
+    {
+        public int Id { get; set; }
+        [Required]
+        [StringLength(1000, MinimumLength = 1, ErrorMessage = "The {0} cannot exceed {2} characters.")]
+        public string Content { get; set; }
+    }
+
     public class CommentItemViewModel
     {
         public int Id { get; set; }
@@ -38,12 +46,10 @@ namespace BugTracker.ViewModels
         public int TicketId { get; set; }
         public string AuthorDisplayName { get; set; }
         public bool CanEdit { get; set; }
-        public bool CanDelete { get; set; }
 
         public CommentItemViewModel()
         {
             CanEdit = false;
-            CanDelete = false;
         }
     }
 }

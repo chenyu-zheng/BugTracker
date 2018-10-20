@@ -25,7 +25,7 @@
 
 <template id="listItem">
     <li class="comment-list-item">
-        <div class="well">
+        <div class="well well-sm">
             <div class="header">
                 <strong class="primary-font comment-author"></strong>
                 <small class="pull-right text-muted">
@@ -33,6 +33,23 @@
                 </small>
             </div>
             <p class="comment-content"></p>
+            <form class="edit-form" style="display: none">
+                <textarea name="Content" rows="5" class="form-control"></textarea>
+                <span class="edit-form-error text-danger"></span>
+                <br />
+                <input type="submit" value="Submit" class="btn btn-default btn-sm" />
+                <input type="button" value="Cancel" class="btn btn-default btn-sm cancel" />
+            </form>
+            <form class="delete-form text-danger" style="display: none">
+                Are you sure you want to delete this?
+                <br />
+                <input type="submit" value="Delete" class="btn btn-danger btn-sm" />
+                <input type="button" value="Cancel" class="btn btn-default btn-sm cancel" />
+            </form>
+            <div class="buttons" style="display: none">
+                <button class="edit-button btn-link"><i class="fas fa-edit"></i></button>
+                <button class="delete-button btn-link"><i class="fas fa-trash"></i></button>
+            </div>
         </div>
     </li>
 </template>
@@ -40,6 +57,8 @@
 <script type="text/javascript">
     const commentListUrl = '@Url.Action("CommentList", "Comments")';
     const submitCommentUrl = '@Url.Action("Create", "Comments")';
+    const deleteCommentUrl = '@Url.Action("Delete", "Comments")';
+    const editCommentUrl = '@Url.Action("Edit", "Comments")';
     const ticketId= "@Model"
 </script>
 <script type="text/javascript" src="~/Scripts/BugTracker.Comment.js"></script>
