@@ -223,6 +223,7 @@
     <Compile Include="Migrations\PermissionConfig.cs" />
     <Compile Include="Migrations\RoleConfig.cs" />
     <Compile Include="Migrations\TicketConfig.cs" />
+    <Compile Include="Migrations\UserConfig.cs" />
     <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\Extensions\IdentityExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -766,6 +767,7 @@
     <Content Include="Views\Projects\_EditEntriesDPartial.cshtml" />
     <Content Include="Views\Tickets\_HistoryListPartial.cshtml" />
     <Content Include="Views\Tickets\_CommentListPartial.cshtml" />
+    <Content Include="Views\Account\DemoLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

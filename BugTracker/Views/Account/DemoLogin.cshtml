@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutUnauthorized.cshtml";
+    ViewBag.Title = "Demo Login";
+}
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="login-panel panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Choose a role to login</h3>
+            </div>
+            <div class="panel-body">
+                <a class="btn btn-default btn-lg btn-block" href=@Url.Action("DemoLoginAs", new { roleName = "Admin" })>
+                    Admin
+                </a>
+                <br />
+                <a class="btn btn-default btn-lg btn-block" href=@Url.Action("DemoLoginAs", new { roleName = "Project Manager" })>
+                    Project Manager
+                </a>
+                <br />
+                <a class="btn btn-default btn-lg btn-block" href=@Url.Action("DemoLoginAs", new { roleName = "Developer" })>
+                    Developer
+                </a>
+                <br />
+                <a class="btn btn-default btn-lg btn-block" href=@Url.Action("DemoLoginAs", new { roleName = "Submitter" })>
+                    Submitter
+                </a>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>

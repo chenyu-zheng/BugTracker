@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BugTracker.ViewModels;
 using BugTracker.Models;
+using BugTracker.Helpers;
 
 namespace BugTracker.Controllers
 {
@@ -51,6 +52,47 @@ namespace BugTracker.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        [AllowAnonymous]
+        public ActionResult DemoLogin()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> DemoLoginAs(string roleName)
+        {
+            string userName;
+            if (roleName == "Admin")
+            {
+                userName = "demo.admin@bugtracker.com";
+            }
+            else if (roleName == "Project Manager")
+            {
+                userName = "demo.pmanager@bugtracker.com";
+            }
+            else if (roleName == "Developer")
+            {
+                userName = "demo.developer@bugtracker.com";
+            }
+            else if (roleName == "Submitter")
+            {
+                userName = "demo.submitter@bugtracker.com";
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+            var user = UserManager.FindByName(userName);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            var uHelper = new UserManageHelper();
+            uHelper.ResetRole(user.Id, roleName);
+            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            return RedirectToAction("Index", "Home");
         }
 
         //

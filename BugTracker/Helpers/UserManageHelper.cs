@@ -56,6 +56,13 @@ namespace BugTracker.Helpers
             return results;
         }
 
+        public void ResetRole(string userId, string roleName)
+        {
+            var roles = userManager.GetRoles(userId).ToArray();
+            userManager.RemoveFromRoles(userId, roles);
+            userManager.AddToRole(userId, roleName);
+        }
+
         public bool HasRole(string userId, string roleName)
         {
             try
