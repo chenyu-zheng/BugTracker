@@ -108,6 +108,17 @@ namespace BugTracker.Helpers
             }
         }
 
+        public bool CanAssignTicket(string userId, int projectId)
+        {
+            return HasPermission(userId, "Assign All Tickets") ||
+                   HasPermission(userId, "Assign Projects Tickets") && IsProjectMember(userId, projectId);
+        }
+
+        public bool CanBeAssignedTicket(string assigneeId, int projectId)
+        {
+            return HasPermission(assigneeId, "Receive Tickets") && IsProjectMember(assigneeId, projectId);
+        }
+
         public bool CanEditTicket(string userId, ITicketItem ticket)
         {
             if (HasPermission(userId, "Edit All Tickets") ||
@@ -120,14 +131,34 @@ namespace BugTracker.Helpers
             return false;
         }
 
-        public bool CanEditComment(string userId, int commentId)
+        public bool CanEditTicket(string userId, int ticketId)
+        {
+            var ticket = db.Tickets.FirstOrDefault(t => t.Id == ticketId);
+            return CanEditTicket(userId, ticket);
+        }
+
+        public bool CanEditComment(string  userId, ICommentItem comment)
         {
             return HasPermission(userId, "Edit All Comments") ||
-                   HasPermission(userId, "Edit Created Comments") && 
-                        db.Comments.Any(c => c.Id == commentId && c.AuthorId == userId) ||
+                   HasPermission(userId, "Edit Created Comments") &&
+                        comment.AuthorId == userId ||
                    HasPermission(userId, "Edit Projects Comments") &&
-                        db.Comments.Any(c => c.Id == commentId && c.Ticket.Project.Members.Any(m => m.Id == userId));
-                
+                        db.Tickets.Any(t => t.Id == comment.TicketId && t.Project.Members.Any(m => m.Id == userId));
+        }
+
+        public bool CanEditComment(string userId, int commentId)
+        {
+            var comment = db.Comments.FirstOrDefault(c => c.Id == commentId);
+            return CanEditComment(userId, comment);
+        }
+
+        public bool CanDeleteAttachments(string userId, IAttachmentItem attachment)
+        {
+            return HasPermission(userId, "Delete All Attachments") ||
+                   HasPermission(userId, "Delete Created Attachments") &&
+                        attachment.AuthorId == userId ||
+                   HasPermission(userId, "Delete Projects Attachments") &&
+                        db.Tickets.Any(t => t.Id == attachment.TicketId && t.Project.Members.Any(m => m.Id == userId));
         }
     }
 }

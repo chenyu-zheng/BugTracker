@@ -1,6 +1,7 @@
 ﻿using BugTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -54,6 +55,36 @@ namespace BugTracker.Helpers
                 return revision;
             }
             return null;
+        }
+
+        public TicketRevision CreateAttachmentRevision(Attachment attachment, string userId)
+        {
+            var entry = db.Entry(attachment);
+            var revision = new TicketRevision
+            {
+                TicketId = attachment.TicketId,
+                UserId = userId
+            };
+            var detail = new TicketRevisionDetail
+            {
+                Property = "Attachment"
+            };
+            if (entry.State == EntityState.Added)
+            {
+                detail.NewValue = attachment.FileName;
+                revision.Created = attachment.Created;
+            }
+            else if (entry.State == EntityState.Deleted)
+            {
+                detail.OldValue = attachment.FileName;
+                revision.Created = DateTimeOffset.Now;
+            }
+            else
+            {
+                return null;
+            }
+            revision.Details.Add(detail);
+            return revision;
         }
     }
 }

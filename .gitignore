@@ -4,6 +4,9 @@
 ## Private setting files
 private.config
 
+## file upload folder
+Uploads
+
 # User-specific files
 *.suo
 *.user

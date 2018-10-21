@@ -1,0 +1,20 @@
+﻿@model IEnumerable<BugTracker.ViewModels.AttachmentViewModel>
+
+@foreach (var item in Model)
+{
+    if (item.CanDelete)
+    {
+        <a href="@Url.Action("Delete", "Attachments", new { id = item.Id })" 
+           class="btn no-padding text-danger @ViewBag.RemoveAttachClassName" style="display: none">
+            <i class="fas fa-times fa-fw"></i>
+        </a>
+    }
+    else
+    {
+        <i class="fas fa-ban fa-fw @ViewBag.RemoveAttachClassName" style="display: none"></i>
+    }
+    <a href="@item.FileUrl">
+        @Html.DisplayFor(m => item.FileName)
+    </a>
+    <br />
+}

@@ -63,11 +63,6 @@ namespace BugTracker.ViewModels
             Revisions = new List<TicketRevisionViewModel>();
         }
     }
-
-    public class AttachmentViewModel
-    {
-
-    }
     
     public class TicketRevisionViewModel
     {

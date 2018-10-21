@@ -18,6 +18,8 @@ namespace BugTracker
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            // Create Uploads folder
+            System.IO.Directory.CreateDirectory(Server.MapPath("~/Uploads"));
 
             // Generate default private.config template
             if (!System.IO.File.Exists(Server.MapPath("~/private.config")))

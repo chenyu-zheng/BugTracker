@@ -140,3 +140,7 @@ table.no-border > thead > tr > th {
 .break-word {
     word-break: break-word;
 }
+
+.no-padding {
+    padding: 0;
+}

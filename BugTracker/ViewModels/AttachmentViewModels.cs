@@ -1,12 +1,13 @@
-﻿using BugTracker.Models.Interfaces;
+﻿using BugTracker.Models;
+using BugTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace BugTracker.Models
+namespace BugTracker.ViewModels
 {
-    public class Attachment : IAttachmentItem
+    public class AttachmentViewModel : IAttachmentItem
     {
         public int Id { get; set; }
         public DateTimeOffset Created { get; set; }
@@ -14,13 +15,13 @@ namespace BugTracker.Models
         public string FileUrl { get; set; }
         public string ContentType { get; set; }
         public int TicketId { get; set; }
-        public virtual Ticket Ticket { get; set; }
         public string AuthorId { get; set; }
-        public virtual ApplicationUser Author { get; set; }
+        public string AuthorName { get; set; }
+        public bool CanDelete { get; set; }
 
-        public Attachment()
+        public AttachmentViewModel()
         {
-            Created = DateTimeOffset.Now;
+            CanDelete = false;
         }
     }
 }

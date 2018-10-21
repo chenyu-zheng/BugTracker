@@ -99,22 +99,64 @@
 
         <div class="col-lg-6">
             <table class="table table-condensed no-border">
-                <thead>
+                <tbody>
                     <tr>
                         <th>
                             @Html.DisplayNameFor(m => m.Description)
                         </th>
                     </tr>
-                </thead>
-                <tbody>
                     <tr>
                         <td class="break-word">
                             @Html.Raw(Model.Description)
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(m => m.Attachments)
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="break-word">
+                            @{
+                                ViewBag.RemoveAttachClassName = "remove-attachment-btn";
+                            }
+                            @Html.Partial("_AttachmentPartial", Model.Attachments)
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+            @if (Model.CanEdit)
+            {
+                <a class="btn btn-link no-padding" id="enableUpload">
+                    <i class="fas fa-paperclip fa-fw"></i> Add
+                </a>
+            }
+            @if (Model.Attachments.Any(a => a.CanDelete))
+            {
+                @Html.Raw("&emsp;");
+                <a class="btn btn-link no-padding" id="enableRemove">
+                    <i class="fas fa-times fa-fw"></i> Remove
+                </a>
+            }
         </div>
+    </div>
+    <div class="row" id="attachmentForm" style="display: none">
+        @using (Html.BeginForm("Create", "Attachments", FormMethod.Post,
+                    new { enctype = "Multipart/form-data" }))
+        {
+            <div class="col-lg-6">
+                <br />
+                <input name="ticketId" type="hidden" value="@Model.Id" />
+                <input name="file" type="file" class="form-control" id="fileUpload" />
+            </div>
+            <div class="col-lg-6">
+                <br />
+                <input type="submit" value="Submit" class="btn btn-default" />
+                <span class="text-danger">
+                    &emsp;Note: File size must not exceed 2 MB
+                </span>
+            </div>
+        }
     </div>
     <hr />
     @if (Model.CanEdit)
@@ -134,7 +176,7 @@
     @if (Model.CanAssign)
     {
         @Html.Raw("&emsp;")
-        <a class="btn btn-link" id="enableAssignment">
+        <a class="btn btn-link no-padding" id="enableAssignment">
             <i class="fas fa-user-tag fa-fw"></i> Assign To
         </a>
         using (Html.BeginForm("Assign", "Tickets", FormMethod.Post,
@@ -166,9 +208,10 @@
     </div>
 </div>
 
-@if (Model.CanAssign)
-{
-    @section Scripts {
+@section Scripts {
+    @if (Model.CanAssign)
+    {
+
         <script type="text/javascript">
             $("#enableAssignment").click(() => {
                 if ($('#AssignForm').is(':visible')) {
@@ -193,6 +236,34 @@
                         }
                     });
             }
+        </script>
+    }
+    @if (Model.CanEdit)
+    {
+        <script type="text/javascript">
+            $("#enableUpload").click(() => {
+                if ($('#attachmentForm').is(':visible')) {
+                    $("#enableUpload").html(`<i class="fas fa-paperclip fa-fw"></i> Add`);
+                    $("#attachmentForm").hide();
+                } else {
+                    $("#enableUpload").html(`<i class="fas fa-ban fa-fw"></i> Cancel`);
+                    $("#attachmentForm").show();
+                }
+            });
+        </script>
+    }
+    @if (Model.Attachments.Any(a => a.CanDelete))
+    {
+        <script type="text/javascript">
+            $("#enableRemove").click(() => {
+                if ($('.@ViewBag.RemoveAttachClassName').is(':visible')) {
+                    $("#enableRemove").html(`<i class="fas fa-times fa-fw"></i> Remove`);
+                    $(".@ViewBag.RemoveAttachClassName").hide();
+                } else {
+                    $("#enableRemove").html(`<i class="fas fa-ban fa-fw"></i> Cancel`);
+                    $(".@ViewBag.RemoveAttachClassName").show();
+                }
+            });
         </script>
     }
 }

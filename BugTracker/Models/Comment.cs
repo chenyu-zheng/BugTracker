@@ -1,11 +1,12 @@
-﻿using System;
+﻿using BugTracker.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace BugTracker.Models
 {
-    public class Comment
+    public class Comment : ICommentItem
     {
         public int Id { get; set; }
         public string Content { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BugTracker.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,13 +38,14 @@ namespace BugTracker.ViewModels
         public string Content { get; set; }
     }
 
-    public class CommentItemViewModel
+    public class CommentItemViewModel : ICommentItem
     {
         public int Id { get; set; }
         public string Content { get; set; }
         public string Created { get; set; }
         public string Updated { get; set; }
         public int TicketId { get; set; }
+        public string AuthorId { get; set; }
         public string AuthorDisplayName { get; set; }
         public bool CanEdit { get; set; }
 

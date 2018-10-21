@@ -57,8 +57,11 @@ namespace BugTracker.Controllers
             };
             db.Comments.Add(comment);
             db.SaveChanges();
-            var nHelper = new NotificationHelper(db);
-            await nHelper.NotifyTicketCommentAsync(userId, ticket, comment);
+            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId) && ticket.AssigneeId != userId)
+            {
+                var nHelper = new NotificationHelper(db);
+                await nHelper.NotifyTicketCommentAsync(userId, ticket, comment);
+            }
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
@@ -80,14 +83,14 @@ namespace BugTracker.Controllers
             }
             var commentDb = db.Comments
                 .FirstOrDefault(c => c.Id == comment.Id);
-            if (comment == null)
+            if (commentDb == null)
             {
                 var error = "Comment not found!";
                 return Json(new { error }, JsonRequestBehavior.AllowGet);
             }
             var userId = User.Identity.GetUserId();
             var uHelper = new UserManageHelper(db);
-            if (!uHelper.CanEditComment(userId, comment.Id))
+            if (!uHelper.CanEditComment(userId, commentDb))
             {
                 var error = "Permission Denied!";
                 return Json(new { error }, JsonRequestBehavior.AllowGet);
@@ -113,7 +116,7 @@ namespace BugTracker.Controllers
             }
             var userId = User.Identity.GetUserId();
             var uHelper = new UserManageHelper(db);
-            if (!uHelper.CanEditComment(userId, id))
+            if (!uHelper.CanEditComment(userId, comment))
             {
                 var error = "Permission Denied!";
                 return Json(new { error }, JsonRequestBehavior.AllowGet);
@@ -143,7 +146,7 @@ namespace BugTracker.Controllers
             IMapper mapper = new Mapper(MappingConfig.Config);
             var comments = mapper.Map<ICollection<Comment>, List<CommentItemViewModel>>
                 (ticket.Comments.OrderByDescending(c => c.Created).ToList());
-            comments.ForEach(c => c.CanEdit = uHelper.CanEditComment(userId, c.Id));
+            comments.ForEach(c => c.CanEdit = uHelper.CanEditComment(userId, c));
             var data = new CommentViewModel
             {
                 TicketId = ticketId,

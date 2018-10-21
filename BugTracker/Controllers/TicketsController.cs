@@ -105,9 +105,10 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            model.Attachments.ForEach(a => a.CanDelete = helper.CanDeleteAttachments(userId, a));
             model = new ViewModelHelper(db).ReformTicketRevisions(model);
             model.CanEdit = true;
-            model.CanAssign = helper.HasPermission(userId, "Assign Tickets");
+            model.CanAssign = helper.CanAssignTicket(userId, model.ProjectId);
             model.CanDelete = helper.HasPermission(userId, "Delete Tickets");
             return View(model);
         }
@@ -146,7 +147,9 @@ namespace BugTracker.Controllers
                 CategoryId = categories.FirstOrDefault().Id,
                 CategoryList = new SelectList(categories, "Id", "Name")
             };
-            model.CanAssign = new UserManageHelper().HasPermission(userId, "Assign Tickets");
+            var uHelper = new UserManageHelper(db);
+            model.CanAssign = 
+                uHelper.HasPermission(userId, "Assign All Tickets") || uHelper.HasPermission(userId, "Assign Projects Tickets");
             return View(model);
         }
 
@@ -156,7 +159,7 @@ namespace BugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PermissionAuthorize("Create Tickets")]
-        public ActionResult Create([Bind(Include = "Subject,Description,ProjectId,CategoryId,PriorityId,AssigneeId")] CreateTicketViewModel model)
+        public async Task<ActionResult> Create([Bind(Include = "Subject,Description,ProjectId,CategoryId,PriorityId,AssigneeId")] CreateTicketViewModel model)
         {
             var userId = User.Identity.GetUserId();
 
@@ -198,10 +201,15 @@ namespace BugTracker.Controllers
                 .Where(s => s.Name == statusName)
                 .Select(s => s.Id)
                 .FirstOrDefault();
-
             ticket.AuthorId = userId;
             db.Tickets.Add(ticket);
             db.SaveChanges();
+
+            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId) && ticket.AssigneeId != userId)
+            {
+                var nHelper = new NotificationHelper(db);
+                await nHelper.NotifyTicketAssignmentAsync(userId, ticket);
+            }
             return RedirectToAction("Index");
         }
 
@@ -283,7 +291,9 @@ namespace BugTracker.Controllers
                 db.TicketRevisions.Add(revision);
             }
             db.SaveChanges();
-            if (revision != null)
+            if (revision != null && 
+                !string.IsNullOrWhiteSpace(ticketDb.AssigneeId) && 
+                ticketDb.AssigneeId != userId)
             {
                 var nHelper = new NotificationHelper(db);
                 await nHelper.NotifyTicketChangeAsync(userId, ticketDb);
@@ -324,7 +334,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [PermissionAuthorize("Assign Tickets")]
+        [PermissionAuthorize("Assign All Tickets, Assign Projects Tickets")]
         public async Task<ActionResult> Assign(int? id, string assigneeId)
         {
             if (id == null)
@@ -335,7 +345,9 @@ namespace BugTracker.Controllers
                 .Where(t => t.Id == id)
                 .Include(t => t.Status)
                 .FirstOrDefault();
-            if (ticket == null)
+            var userId = User.Identity.GetUserId();
+            var helper = new UserManageHelper();
+            if (ticket == null || !helper.CanAssignTicket(userId, ticket.ProjectId))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -345,10 +357,9 @@ namespace BugTracker.Controllers
             }
             if (ticket.AssigneeId != assigneeId)
             {
-                var helper = new UserManageHelper();
-                if (!(string.IsNullOrWhiteSpace(assigneeId) ||
-                        helper.HasPermission(assigneeId, "Receive Tickets") &&
-                        helper.IsProjectMember(assigneeId, ticket.ProjectId)))
+                
+                if (!string.IsNullOrWhiteSpace(assigneeId) &&
+                    !helper.CanBeAssignedTicket(assigneeId, ticket.ProjectId))
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
@@ -369,9 +380,8 @@ namespace BugTracker.Controllers
                     db.TicketRevisions.Add(revision);
                 }
                 db.SaveChanges();
-                if (!string.IsNullOrWhiteSpace(assigneeId))
+                if (!string.IsNullOrWhiteSpace(assigneeId) && ticket.AssigneeId != userId)
                 {
-                    var userId = User.Identity.GetUserId();
                     var nHelper = new NotificationHelper(db);
                     await nHelper.NotifyTicketAssignmentAsync(userId, ticket);
                 }
@@ -379,7 +389,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", new { id });
         }
 
-        [PermissionAuthorize("Assign Tickets")]
+        [PermissionAuthorize("Assign All Tickets, Assign Projects Tickets")]
         public JsonResult GetAssigneeList(int projectId)
         {
             var roleIds = db.Roles

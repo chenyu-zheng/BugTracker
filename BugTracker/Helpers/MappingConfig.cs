@@ -19,6 +19,7 @@ namespace BugTracker.Helpers
             cfg.AddProfile<UserProfile>();
             cfg.AddProfile<ProjectProfile>();
             cfg.AddProfile<CommentItemProfile>();
+            cfg.AddProfile<AttachmentProfile>();
         });
     }
 
@@ -108,6 +109,14 @@ namespace BugTracker.Helpers
         public string Resolve(object src, object dest, DateTimeOffset? srcMember, string destMember, ResolutionContext context)
         {
             return srcMember.HasValue ? srcMember.Value.ToString("yy-MM-dd HH:mm") : null;
+        }
+    }
+
+    public class AttachmentProfile : Profile
+    {
+        public AttachmentProfile()
+        {
+            CreateMap<Attachment, AttachmentViewModel>();
         }
     }
 }

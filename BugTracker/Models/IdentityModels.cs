@@ -48,6 +48,7 @@ namespace BugTracker.Models
         public DbSet<TicketRevision> TicketRevisions { get; set; }
         public DbSet<TicketRevisionDetail> TicketRevisionDetails { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection")

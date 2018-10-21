@@ -26,7 +26,8 @@ namespace BugTracker
             "Assign All Projects",
             "Assign Own Projects",
             "Delete Projects",
-            "Assign Tickets",
+            "Assign All Tickets",
+            "Assign Projects Tickets",
             "Create Tickets",
             "List All Tickets",
             "List Projects Tickets",
@@ -42,6 +43,9 @@ namespace BugTracker
             "Edit All Comments",
             "Edit Projects Comments",
             "Edit Created Comments",
+            "Delete All Attachments",
+            "Delete Projects Attachments",
+            "Delete Created Attachments",
         };
 
         public static IReadOnlyDictionary<string, IReadOnlyList<string>> RolePermissions = new Dictionary<string, IReadOnlyList<string>>
@@ -54,12 +58,13 @@ namespace BugTracker
                 "Edit All Projects",
                 "Assign All Projects",
                 "Delete Projects",
-                "Assign Tickets",
+                "Assign All Tickets",
                 "List All Tickets",
                 "Edit All Tickets",
                 "Edit Ticket Status",
                 "Delete Tickets",
                 "Edit All Comments",
+                "Delete All Attachments",
             },
             ["Project Manager"] = new List<string>
             {
@@ -67,12 +72,13 @@ namespace BugTracker
                 "Create Projects",
                 "Edit All Projects",
                 "Assign All Projects",
-                "Assign Tickets",
+                "Assign Projects Tickets",
                 "List All Tickets",
                 "List Projects Tickets",
                 "Edit Projects Tickets",
                 "Edit Ticket Status",
                 "Edit Projects Comments",
+                "Delete Projects Attachments",
             },
             ["Developer"] = new List<string>
             {
@@ -83,6 +89,7 @@ namespace BugTracker
                 "Edit Assigned Tickets",
                 "Receive Tickets",
                 "Edit Created Comments",
+                "Delete Created Attachments",
             },
             ["Submitter"] = new List<string>
             {
@@ -92,6 +99,7 @@ namespace BugTracker
                 "List Created Tickets",
                 "Edit Created Tickets",
                 "Edit Created Comments",
+                "Delete Created Attachments",
             }
         };
 

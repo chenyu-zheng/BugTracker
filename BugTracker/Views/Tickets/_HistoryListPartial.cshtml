@@ -40,6 +40,17 @@
                                     @Html.Raw($"Assigned to <i>{detail.NewValue}</i>")
                                 }
                             }
+                            else if (detail.Property == "Attachment")
+                            {
+                                if (!string.IsNullOrWhiteSpace(detail.OldValue))
+                                {
+                                    @Html.Raw($"Removed {detail.Property} <i>{detail.OldValue}</i>")<br />
+                                }
+                                if (!string.IsNullOrWhiteSpace(detail.NewValue))
+                                {
+                                    @Html.Raw($"Added {detail.Property} <i>{detail.NewValue}</i>")
+                                }
+                            }
                             else
                             {
                                 @Html.Raw($"Modified {detail.Property} from <i>{detail.OldValue}</i> to <i>{detail.NewValue}</i>")
