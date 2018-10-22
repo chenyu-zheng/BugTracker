@@ -11,96 +11,156 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fas fa-folder fa-5x"></i>
+    <div class="col-md-6">
+        @if (User.IsInRole("Admin") ||
+            User.IsInRole("Project Manager") ||
+            User.IsInRole("Developer") ||
+            User.IsInRole("Submitter"))
+        {
+            <div class="col-lg-6 col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3 dashboard-icon-wrapper">
+                                <i class="fas fa-folder fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@Html.DisplayFor(m => m.MyProjects)</div>
+                                <div>
+                                    Working<br />
+                                    Projects
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">@Html.DisplayFor(m => m.MyProjects)</div>
-                        <div>Working Projects</div>
-                    </div>
+                    <a href="@Url.Action("MyProjects", "Projects")">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
-            <a href="@Url.Action("MyProjects", "Projects")">
-                <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-green">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fas fa-file-alt fa-5x"></i>
+        }
+        @if (User.IsInRole("Project Manager") ||
+            User.IsInRole("Developer"))
+        {
+            <div class="col-lg-6 col-md-12">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3 dashboard-icon-wrapper">
+                                <i class="fas fa-file-alt fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@Html.DisplayFor(m => m.ProjectsTickets)</div>
+                                <div>
+                                    From<br />
+                                    My Projects
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">@Html.DisplayFor(m => m.ProjectsTickets)</div>
-                        <div>From My Projects</div>
-                    </div>
+                    <a href="@Url.Action("FromMyProjects", "Tickets")">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
-            <a href="@Url.Action("FromMyProjects", "Tickets")">
-                <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-yellow">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fas fa-file-alt fa-5x"></i>
+        }
+        @if (User.IsInRole("Developer"))
+        {
+            <div class="col-lg-6 col-md-12">
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3 dashboard-icon-wrapper">
+                                <i class="fas fa-file-alt fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@Html.DisplayFor(m => m.AssignedTickets)</div>
+                                <div>
+                                    Assigned<br />
+                                    To Me
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">@Html.DisplayFor(m => m.AssignedTickets)</div>
-                        <div>Assigned</div>
-                    </div>
+                    <a href="@Url.Action("AssignedToMe", "Tickets")">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
-            <a href="@Url.Action("AssignedToMe", "Tickets")">
-                <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-red">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fas fa-file-alt fa-5x"></i>
+        }
+        @if (User.IsInRole("Submitter"))
+        {
+            <div class="col-lg-6 col-md-12">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3 dashboard-icon-wrapper">
+                                <i class="fas fa-file-alt fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@Html.DisplayFor(m => m.CreatedTickets)</div>
+                                <div>
+                                    Posted<br />
+                                    By Me
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">@Html.DisplayFor(m => m.CreatedTickets)</div>
-                        <div>Posted</div>
-                    </div>
+                    <a href="@Url.Action("CreatedByMe", "Tickets")">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
-            <a href="@Url.Action("CreatedByMe", "Tickets")">
-                <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fas fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
+        }
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                Recent Updates
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-comment fa-fw"></i> New Comment
+                        <span class="pull-right text-muted small">
+                            <em>4 minutes ago</em>
+                        </span>
+                    </a>
+
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                        <span class="pull-right text-muted small">
+                            <em>27 minutes ago</em>
+                        </span>
+                    </a>
+
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-money fa-fw"></i> Payment Received
+                        <span class="pull-right text-muted small">
+                            <em>Yesterday</em>
+                        </span>
+                    </a>
                 </div>
-            </a>
+                <!-- /.list-group -->
+            </div>
+            <!-- /.panel-body -->
         </div>
     </div>
-
 </div>

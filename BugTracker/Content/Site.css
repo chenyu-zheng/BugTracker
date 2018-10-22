@@ -144,3 +144,15 @@ table.no-border > thead > tr > th {
 .no-padding {
     padding: 0;
 }
+
+.brand-logo {
+    margin-right: 4px;
+    float: left;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.dashboard-icon-wrapper {
+    padding-top: 10px;
+}

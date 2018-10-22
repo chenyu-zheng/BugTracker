@@ -438,6 +438,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\BugTracker-Logo.png" />
     <Content Include="Scripts\all.js" />
     <Content Include="Scripts\all.min.js" />
     <Content Include="Scripts\bootstrap.js" />
