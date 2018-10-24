@@ -162,11 +162,14 @@ namespace BugTracker.Controllers
         public async Task<ActionResult> Create([Bind(Include = "Subject,Description,ProjectId,CategoryId,PriorityId,AssigneeId")] CreateTicketViewModel model)
         {
             var userId = User.Identity.GetUserId();
+            var uHelper = new UserManageHelper(db);
 
             ActionResult modelInvalid()
             {
                 var vMHelper = new ViewModelHelper();
                 model = vMHelper.AddSelectLists(model, userId);
+                model.CanAssign =
+                uHelper.HasPermission(userId, "Assign All Tickets") || uHelper.HasPermission(userId, "Assign Projects Tickets");
                 return View(model);
             }
 
@@ -189,8 +192,8 @@ namespace BugTracker.Controllers
                 !db.Projects.Any(p => p.Id == ticket.ProjectId &&           // ProjectId doesn't exist or the author is not a member
                     p.Members.Any(m => m.Id == userId)) ||
                 !(string.IsNullOrWhiteSpace(ticket.AssigneeId) ||           // Assignee doesn't exist or isn't a developer or not belong to the project
-                    helper.HasRole(ticket.AssigneeId, "Developer") &&
-                    helper.IsProjectMember(ticket.AssigneeId, ticket.ProjectId))
+                    uHelper.HasRole(ticket.AssigneeId, "Developer") &&
+                    uHelper.IsProjectMember(ticket.AssigneeId, ticket.ProjectId))
                 )
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
