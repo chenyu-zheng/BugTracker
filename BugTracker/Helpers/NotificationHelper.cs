@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
@@ -44,11 +45,17 @@ namespace BugTracker.Helpers
                 Console.WriteLine(ex.Message);
                 await Task.FromResult(0);
             }
-
         }
 
-        public async Task NotifyTicketAssignmentAsync(string userId, Ticket ticket)
+        public async Task NotifyTicketAssignmentAsync(string userId, int ticketId)
         {
+            var ticket = db.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.Author)
+                .Include(t => t.Category)
+                .Include(t => t.Priority)
+                .Include(t => t.Status)
+                .FirstOrDefault(t => t.Id == ticketId);
             var name = userManager.FindById(userId).DisplayName;
             var subject = "You Have Been Assigned a Ticket";
             var body = $"<h3>{name} assigned a ticket to you.</h3>" +

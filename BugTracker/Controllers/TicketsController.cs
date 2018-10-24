@@ -211,7 +211,7 @@ namespace BugTracker.Controllers
             if (!string.IsNullOrWhiteSpace(ticket.AssigneeId) && ticket.AssigneeId != userId)
             {
                 var nHelper = new NotificationHelper(db);
-                await nHelper.NotifyTicketAssignmentAsync(userId, ticket);
+                await nHelper.NotifyTicketAssignmentAsync(userId, ticket.Id);
             }
             return RedirectToAction("Index");
         }
@@ -386,7 +386,7 @@ namespace BugTracker.Controllers
                 if (!string.IsNullOrWhiteSpace(assigneeId) && ticket.AssigneeId != userId)
                 {
                     var nHelper = new NotificationHelper(db);
-                    await nHelper.NotifyTicketAssignmentAsync(userId, ticket);
+                    await nHelper.NotifyTicketAssignmentAsync(userId, ticket.Id);
                 }
             }
             return RedirectToAction("Details", new { id });
