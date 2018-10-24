@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
+using BugTracker.Helpers;
 
 namespace BugTracker.Controllers
 {
@@ -24,6 +27,32 @@ namespace BugTracker.Controllers
                 AssignedTickets = user.AssignedTickets.Count(),
                 CreatedTickets = user.Tickets.Count()
             };
+            
+            var uHelper = new UserManageHelper(db);
+            if (uHelper.HasPermission(userId, "Receive Tickets"))
+            {
+                var ticketUpdates = db.TicketRevisions
+                    .Where(r => r.Ticket.AssigneeId == userId &&
+                    !(r.Details.Any(d => d.Property == "AssigneeId")))
+                    .OrderByDescending(r => r.Created)
+                    .Take(5)
+                    .ProjectTo<TicketUpdateViewModel>(MappingConfig.Config)
+                    .ToList();
+                    var vMHelper = new ViewModelHelper(db);
+                model.TicketUpdates = vMHelper.ReformTicketRevisions(
+                        ticketUpdates.Cast<TicketRevisionViewModel>().ToList())
+                        .Cast<TicketUpdateViewModel>().ToList();
+
+                model.NewAssignedTickets = db.Tickets
+                    .Where(t => t.AssigneeId == userId &&
+                        (!t.Revisions.Any() ||
+                            t.Revisions.Any(r => r.Details.Any(d => d.NewValue == userId))))
+                    .OrderByDescending(t => t.Updated.HasValue ? t.Updated : t.Created)
+                    .Take(5)
+                    .ProjectTo<TicketViewModel>(MappingConfig.Config)
+                    .ToList();
+            }
+
             return View(model);
         }
 

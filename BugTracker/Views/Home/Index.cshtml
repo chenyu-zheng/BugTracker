@@ -11,13 +11,13 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         @if (User.IsInRole("Admin") ||
             User.IsInRole("Project Manager") ||
             User.IsInRole("Developer") ||
             User.IsInRole("Submitter"))
         {
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-3 col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <div class="row">
@@ -27,8 +27,7 @@
                             <div class="col-xs-9 text-right">
                                 <div class="huge">@Html.DisplayFor(m => m.MyProjects)</div>
                                 <div>
-                                    Working<br />
-                                    Projects
+                                    My Projects
                                 </div>
                             </div>
                         </div>
@@ -46,7 +45,7 @@
         @if (User.IsInRole("Project Manager") ||
             User.IsInRole("Developer"))
         {
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-3 col-md-6">
                 <div class="panel panel-green">
                     <div class="panel-heading">
                         <div class="row">
@@ -56,8 +55,7 @@
                             <div class="col-xs-9 text-right">
                                 <div class="huge">@Html.DisplayFor(m => m.ProjectsTickets)</div>
                                 <div>
-                                    From<br />
-                                    My Projects
+                                    From My Projects
                                 </div>
                             </div>
                         </div>
@@ -74,7 +72,7 @@
         }
         @if (User.IsInRole("Developer"))
         {
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-3 col-md-6">
                 <div class="panel panel-yellow">
                     <div class="panel-heading">
                         <div class="row">
@@ -84,8 +82,7 @@
                             <div class="col-xs-9 text-right">
                                 <div class="huge">@Html.DisplayFor(m => m.AssignedTickets)</div>
                                 <div>
-                                    Assigned<br />
-                                    To Me
+                                    Assigned To Me
                                 </div>
                             </div>
                         </div>
@@ -102,7 +99,7 @@
         }
         @if (User.IsInRole("Submitter"))
         {
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-3 col-md-6">
                 <div class="panel panel-red">
                     <div class="panel-heading">
                         <div class="row">
@@ -112,8 +109,7 @@
                             <div class="col-xs-9 text-right">
                                 <div class="huge">@Html.DisplayFor(m => m.CreatedTickets)</div>
                                 <div>
-                                    Posted<br />
-                                    By Me
+                                    Posted By Me
                                 </div>
                             </div>
                         </div>
@@ -129,38 +125,88 @@
             </div>
         }
     </div>
-    <div class="col-md-6">
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                Recent Updates
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <div class="list-group">
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-comment fa-fw"></i> New Comment
-                        <span class="pull-right text-muted small">
-                            <em>4 minutes ago</em>
-                        </span>
-                    </a>
-
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-envelope fa-fw"></i> Message Sent
-                        <span class="pull-right text-muted small">
-                            <em>27 minutes ago</em>
-                        </span>
-                    </a>
-
-                    <a href="#" class="list-group-item">
-                        <i class="fa fa-money fa-fw"></i> Payment Received
-                        <span class="pull-right text-muted small">
-                            <em>Yesterday</em>
-                        </span>
-                    </a>
+</div>
+<div class="row">
+    @if (Model.TicketUpdates.Any())
+    {
+        <div class="col-lg-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    Ticket Updates
                 </div>
-                <!-- /.list-group -->
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        @foreach (var item in Model.TicketUpdates)
+                        {
+                            <a href="@Url.Action("Details", "Tickets", new { id = item.TicketId })" class="list-group-item">
+                                <div class="header break-word">
+                                    <strong class="primary-font">@Html.DisplayFor(m => item.TicketSubject)</strong>
+                                    <small class="pull-right text-muted">
+                                        <i class="fa fa-clock-o fa-fw"></i>@Html.Raw(item.Created.ToString("yy-MM-dd HH:mm"))
+                                    </small>
+                                </div>
+                                <div class="dark-green">@Html.DisplayFor(m => item.UserDisplayName)</div>
+                                @foreach (var detail in item.Details)
+                                {
+                                    <div class="break-word">
+                                        @if (detail.Property == "Description")
+                                        {
+                                            @Html.Raw("Modified ")@Html.DisplayFor(m => detail.Property);
+                                        }
+                                        else if (detail.Property == "Attachment")
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(detail.OldValue))
+                                            {
+                                                @Html.Raw($"Removed {detail.Property} <i>{detail.OldValue}</i>")<br />
+                                            }
+                                            if (!string.IsNullOrWhiteSpace(detail.NewValue))
+                                            {
+                                                @Html.Raw($"Added {detail.Property} <i>{detail.NewValue}</i>")
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw($"Modified {detail.Property} from <i>{detail.OldValue}</i> to <i>{detail.NewValue}</i>")
+                                        }
+                                    </div>
+                                }
+                            </a>
+                        }
+                    </div>
+                    <!-- /.list-group -->
+                </div>
+                <!-- /.panel-body -->
             </div>
-            <!-- /.panel-body -->
         </div>
-    </div>
+    }
+    @if (Model.NewAssignedTickets.Any())
+    {
+        <div class="col-lg-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    New Assigned Tickets
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        @foreach (var item in Model.NewAssignedTickets)
+                        {
+                            <a href="@Url.Action("Details", "Tickets", new { id = item.Id })" class="list-group-item"
+                               title="Project: @item.ProjectName &#10;Category: @item.CategoryName &#10;Status: @item.StatusName &#10;Priority: @item.PriorityName">
+                                <div class="header break-word">
+                                    <strong class="primary-font">@Html.DisplayFor(m => item.Subject)</strong>
+                                    <small class="pull-right text-muted">
+                                        <i class="fa fa-clock-o fa-fw"></i>@Html.Raw(item.LastUpdated.ToString("yy-MM-dd HH:mm"))
+                                    </small>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                    <!-- /.list-group -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+        </div>
+    }
 </div>

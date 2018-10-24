@@ -52,9 +52,9 @@ namespace BugTracker.Helpers
             return viewModel;
         }
 
-        public TicketDetailsViewModel ReformTicketRevisions(TicketDetailsViewModel viewModel)
+        public List<TicketRevisionViewModel> ReformTicketRevisions(List<TicketRevisionViewModel> revisions)
         {
-            viewModel.Revisions = viewModel.Revisions.OrderByDescending(r => r.Created).ToList();
+            revisions = revisions.OrderByDescending(r => r.Created).ToList();
             var props = new List<string>
             {
                 "CategoryId",
@@ -62,19 +62,19 @@ namespace BugTracker.Helpers
                 "PriorityId",
                 "AssigneeId",
             };
-            var details = viewModel.Revisions
+            var details = revisions
                 .SelectMany(r => r.Details)
                 .Where(d => props.Contains(d.Property));
             if (!details.Any())
             {
-                return viewModel;
+                return revisions;
             }
             foreach (var item in details)
             {
                 if (item.Property == "AssigneeId")
                 {
                     item.Property = "Assignee";
-                    item.OldValue = item.OldValue == null ? 
+                    item.OldValue = item.OldValue == null ?
                         null : db.Users.FirstOrDefault(x => x.Id == item.OldValue).DisplayName;
                     item.NewValue = item.NewValue == null ?
                         null : db.Users.FirstOrDefault(x => x.Id == item.NewValue).DisplayName;
@@ -103,7 +103,7 @@ namespace BugTracker.Helpers
                     }
                 }
             }
-            return viewModel;
+            return revisions;
         }
     }
 }

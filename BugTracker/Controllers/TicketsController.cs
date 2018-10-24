@@ -106,7 +106,7 @@ namespace BugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             model.Attachments.ForEach(a => a.CanDelete = helper.CanDeleteAttachments(userId, a));
-            model = new ViewModelHelper(db).ReformTicketRevisions(model);
+            model.Revisions = new ViewModelHelper(db).ReformTicketRevisions(model.Revisions);
             model.CanEdit = true;
             model.CanAssign = helper.CanAssignTicket(userId, model.ProjectId);
             model.CanDelete = helper.HasPermission(userId, "Delete Tickets");

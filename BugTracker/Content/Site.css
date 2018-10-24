@@ -6,11 +6,11 @@ th.role {
     text-align: center;
 }
 
-td.name {
+/*td.name {
 }
 
 td.username {
-}
+}*/
 
 td.role {
     width: 12%;
@@ -24,6 +24,10 @@ td.edit {
 
 .green {
     color: #5cb85c;
+}
+
+.dark-green {
+    color: #3c763d;
 }
 
 .orange {

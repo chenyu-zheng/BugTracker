@@ -20,6 +20,7 @@ namespace BugTracker.Helpers
             cfg.AddProfile<ProjectProfile>();
             cfg.AddProfile<CommentItemProfile>();
             cfg.AddProfile<AttachmentProfile>();
+            cfg.AddProfile<TicketUpdateProfile>();
         });
     }
 
@@ -72,6 +73,14 @@ namespace BugTracker.Helpers
             //.ForMember(dest => dest.Revisions, opt => opt.MapFrom(src => src.Revisions));
             CreateMap<TicketRevision, TicketRevisionViewModel>();
             CreateMap<TicketRevisionDetail, TicketRevisionDetailViewModel>();
+        }
+    }
+
+    public class TicketUpdateProfile : Profile
+    {
+        public TicketUpdateProfile()
+        {
+            CreateMap<TicketRevision, TicketUpdateViewModel>();
         }
     }
 
