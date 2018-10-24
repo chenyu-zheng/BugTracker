@@ -202,6 +202,7 @@
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Controllers\UserManageController.cs" />
+    <Compile Include="Filters\LogActionAttribute.cs" />
     <Compile Include="Filters\PermissionAuthorizeAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -226,6 +227,7 @@
     <Compile Include="Migrations\RoleConfig.cs" />
     <Compile Include="Migrations\TicketConfig.cs" />
     <Compile Include="Migrations\UserConfig.cs" />
+    <Compile Include="Models\ActionLog.cs" />
     <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\Extensions\IdentityExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />

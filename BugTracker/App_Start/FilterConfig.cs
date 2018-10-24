@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using BugTracker.ActionFilters;
+using System.Web;
 using System.Web.Mvc;
 
 namespace BugTracker
@@ -9,6 +10,7 @@ namespace BugTracker
         {
             filters.Add(new HandleErrorAttribute());
             filters.Add(new AuthorizeAttribute());
+            filters.Add(new LogActionAttribute());
         }
     }
 }
