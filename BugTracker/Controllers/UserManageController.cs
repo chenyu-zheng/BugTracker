@@ -14,6 +14,7 @@ using System.Web.Mvc;
 
 namespace BugTracker.Controllers
 {
+    [PermissionAuthorize("Edit User Roles")]
     public class UserManageController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -26,7 +27,6 @@ namespace BugTracker.Controllers
             roleManager = new ApplicationRoleManager(new RoleStore<ApplicationRole>(db));
         }
 
-        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var model = userManager.Users
@@ -47,7 +47,6 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
-        [PermissionAuthorize("Edit User Roles")]
         public ActionResult ChangeUserRole(string id)
         {
             if (!ModelState.IsValid)
@@ -76,7 +75,6 @@ namespace BugTracker.Controllers
         }
 
         [HttpPost]
-        [PermissionAuthorize("Edit User Roles")]
         public ActionResult ChangeUserRole(UserRoleViewModel model)
         {
             var user = userManager.FindById(model.Id);
