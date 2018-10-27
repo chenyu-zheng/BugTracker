@@ -91,6 +91,7 @@ namespace BugTracker.Controllers
             }
             var uHelper = new UserManageHelper();
             uHelper.ResetRole(user.Id, roleName);
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             return RedirectToAction("Index", "Home");
         }
