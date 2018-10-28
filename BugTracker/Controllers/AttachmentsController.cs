@@ -53,10 +53,16 @@ namespace BugTracker.Controllers
                 db.TicketRevisions.Add(revision);
             }
             db.SaveChanges();
-            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId) && ticket.AssigneeId != userId)
+            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId))
             {
                 var nHelper = new NotificationHelper(db);
-                await nHelper.NotifyTicketAttachmentAsync(userId, ticket, attachment);
+                var notification = nHelper.AttachmentAdded(userId, ticket, attachment);
+                db.Notifications.Add(notification);
+                db.SaveChanges();
+                if (ticket.AssigneeId != userId)
+                {
+                    await nHelper.Send(notification);
+                }
             }
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }

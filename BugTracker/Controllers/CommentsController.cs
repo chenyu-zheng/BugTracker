@@ -57,10 +57,16 @@ namespace BugTracker.Controllers
             };
             db.Comments.Add(comment);
             db.SaveChanges();
-            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId) && ticket.AssigneeId != userId)
+            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId))
             {
                 var nHelper = new NotificationHelper(db);
-                await nHelper.NotifyTicketCommentAsync(userId, ticket, comment);
+                var notification = nHelper.CommentedAdded(userId, ticket, comment);
+                db.Notifications.Add(notification);
+                db.SaveChanges();
+                if (ticket.AssigneeId != userId)
+                {
+                    await nHelper.Send(notification);
+                }
             }
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }

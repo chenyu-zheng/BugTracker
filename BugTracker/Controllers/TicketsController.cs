@@ -208,10 +208,16 @@ namespace BugTracker.Controllers
             db.Tickets.Add(ticket);
             db.SaveChanges();
 
-            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId) && ticket.AssigneeId != userId)
+            if (!string.IsNullOrWhiteSpace(ticket.AssigneeId))
             {
                 var nHelper = new NotificationHelper(db);
-                await nHelper.NotifyTicketAssignmentAsync(userId, ticket.Id);
+                var notification = nHelper.TicketAssigned(userId, ticket.Id);
+                db.Notifications.Add(notification);
+                db.SaveChanges();
+                if (ticket.AssigneeId != userId)
+                {
+                    await nHelper.Send(notification);
+                }
             }
             return RedirectToAction("Index");
         }
@@ -292,15 +298,18 @@ namespace BugTracker.Controllers
             if (revision != null)
             {
                 db.TicketRevisions.Add(revision);
+                if (!string.IsNullOrWhiteSpace(ticketDb.AssigneeId))
+                {
+                    var nHelper = new NotificationHelper(db);
+                    var notification =  nHelper.TicketChanged(userId, ticketDb);
+                    db.Notifications.Add(notification);
+                    if (ticketDb.AssigneeId != userId)
+                    {
+                        await nHelper.Send(notification);
+                    }
+                }
             }
             db.SaveChanges();
-            if (revision != null && 
-                !string.IsNullOrWhiteSpace(ticketDb.AssigneeId) && 
-                ticketDb.AssigneeId != userId)
-            {
-                var nHelper = new NotificationHelper(db);
-                await nHelper.NotifyTicketChangeAsync(userId, ticketDb);
-            }
             return RedirectToAction("Details", new { id = ticketDb.Id });
         }
 
@@ -381,13 +390,15 @@ namespace BugTracker.Controllers
                 if (revision != null)
                 {
                     db.TicketRevisions.Add(revision);
+                    if (!string.IsNullOrWhiteSpace(assigneeId) && ticket.AssigneeId != userId)
+                    {
+                        var nHelper = new NotificationHelper(db);
+                        var notification = nHelper.TicketAssigned(userId, ticket.Id);
+                        db.Notifications.Add(notification);
+                        await nHelper.Send(notification);
+                    }
                 }
                 db.SaveChanges();
-                if (!string.IsNullOrWhiteSpace(assigneeId) && ticket.AssigneeId != userId)
-                {
-                    var nHelper = new NotificationHelper(db);
-                    await nHelper.NotifyTicketAssignmentAsync(userId, ticket.Id);
-                }
             }
             return RedirectToAction("Details", new { id });
         }

@@ -235,6 +235,7 @@
     <Compile Include="Models\Interfaces\CommentInterfaces.cs" />
     <Compile Include="Models\Interfaces\TicketInterfaces.cs" />
     <Compile Include="Models\Interfaces\UserInterfaces.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\TicketRevisionDetail.cs" />
@@ -252,6 +253,7 @@
     <Compile Include="ViewModels\CommentViewModels.cs" />
     <Compile Include="ViewModels\DashboardViewModels.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
+    <Compile Include="ViewModels\NotificationViewModels.cs" />
     <Compile Include="ViewModels\ProjectViewModels.cs" />
     <Compile Include="ViewModels\TicketViewModels.cs" />
     <Compile Include="ViewModels\UserManageViewModels.cs" />

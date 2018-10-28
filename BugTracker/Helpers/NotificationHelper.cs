@@ -23,17 +23,17 @@ namespace BugTracker.Helpers
             userManager = new ApplicationUserManager(new ApplicationUserStore(db));
         }
 
-        public async Task SendNotification(string receiverId, string subject, string body)
+        public async Task Send(Notification notification)
         {
             try
             {
                 var from = $"Notification<{WebConfigurationManager.AppSettings["emailfrom"]}>";
-                var to = userManager.FindById(receiverId).Email;
+                var to = userManager.FindById(notification.UserId).Email;
 
                 var email = new MailMessage(from, to)
                 {
-                    Subject = subject,
-                    Body = body,
+                    Subject = notification.Subject,
+                    Body = notification.Body,
                     IsBodyHtml = true
                 };
 
@@ -47,7 +47,7 @@ namespace BugTracker.Helpers
             }
         }
 
-        public async Task NotifyTicketAssignmentAsync(string userId, int ticketId)
+        public Notification TicketAssigned(string userId, int ticketId)
         {
             var ticket = db.Tickets
                 .Include(t => t.Project)
@@ -68,11 +68,18 @@ namespace BugTracker.Helpers
                        $"<strong>Catagory</strong> {ticket.Category.Name}<br />" +
                        $"<strong>Priority</strong> {ticket.Priority.Name}<br />" +
                        $"<strong>Status</strong> {ticket.Status.Name}";
-
-            await SendNotification(ticket.AssigneeId, subject, body);
+            return new Notification
+            {
+                Subject = subject,
+                Body = body,
+                UserId = userId,
+                Created = ticket.Updated.Value,
+                ItemType = db.Entry(ticket).Entity.GetType().BaseType.Name,
+                ItemId = ticket.Id.ToString()
+            };
         }
 
-        public async Task NotifyTicketChangeAsync(string userId, Ticket ticket)
+        public Notification TicketChanged(string userId, Ticket ticket)
         {
             var name = userManager.FindById(userId).DisplayName;
             var subject = "Your Ticket Has Been Modified";
@@ -86,11 +93,18 @@ namespace BugTracker.Helpers
                        $"<strong>Catagory</strong> {ticket.Category.Name}<br />" +
                        $"<strong>Priority</strong> {ticket.Priority.Name}<br />" +
                        $"<strong>Status</strong> {ticket.Status.Name}";
-
-            await SendNotification(ticket.AssigneeId, subject, body);
+            return new Notification
+            {
+                Subject = subject,
+                Body = body,
+                UserId = userId,
+                Created = ticket.Updated.Value,
+                ItemType = db.Entry(ticket).Entity.GetType().BaseType.Name,
+                ItemId = ticket.Id.ToString()
+            };
         }
 
-        public async Task NotifyTicketCommentAsync(string userId, Ticket ticket, Comment comment)
+        public Notification CommentedAdded(string userId, Ticket ticket, Comment comment)
         {
             var name = userManager.FindById(userId).DisplayName;
             var subject = "Your Ticket Has a New Comment";
@@ -102,11 +116,18 @@ namespace BugTracker.Helpers
                        $"<p>{ticket.Description}</p>" +
                        $"<strong>Project:</strong>" +
                        $"<p>{ticket.Project.Name}</p>";
-
-            await SendNotification(ticket.AssigneeId, subject, body);
+            return new Notification
+            {
+                Subject = subject,
+                Body = body,
+                UserId = userId,
+                Created = comment.Created,
+                ItemType = db.Entry(comment).Entity.GetType().BaseType.Name,
+                ItemId = comment.Id.ToString()
+            };
         }
 
-        public async Task NotifyTicketAttachmentAsync(string userId, Ticket ticket, Attachment attachment)
+        public Notification AttachmentAdded(string userId, Ticket ticket, Attachment attachment)
         {
             var name = userManager.FindById(userId).DisplayName;
             var subject = "Your Ticket Has a New Attachment";
@@ -118,8 +139,15 @@ namespace BugTracker.Helpers
                        $"<p>{ticket.Description}</p>" +
                        $"<strong>Project:</strong>" +
                        $"<p>{ticket.Project.Name}</p>";
-
-            await SendNotification(ticket.AssigneeId, subject, body);
+            return new Notification
+            {
+                Subject = subject,
+                Body = body,
+                UserId = userId,
+                Created = attachment.Created,
+                ItemType = db.Entry(attachment).Entity.GetType().BaseType.Name,
+                ItemId = attachment.Id.ToString()
+            };
         }
     }
 }

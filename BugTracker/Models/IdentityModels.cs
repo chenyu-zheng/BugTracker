@@ -18,12 +18,14 @@ namespace BugTracker.Models
         public virtual ICollection<Ticket> Tickets { get; set; }
         [InverseProperty("Assignee")]
         public virtual ICollection<Ticket> AssignedTickets { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
 
         public ApplicationUser()
         {
             Projects = new HashSet<Project>();
             Tickets = new HashSet<Ticket>();
             AssignedTickets = new HashSet<Ticket>();
+            Notifications = new HashSet<Notification>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager)
@@ -50,6 +52,7 @@ namespace BugTracker.Models
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<ActionLog> ActionLogs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection")
