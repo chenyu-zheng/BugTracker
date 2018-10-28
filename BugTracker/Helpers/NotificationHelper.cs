@@ -73,7 +73,7 @@ namespace BugTracker.Helpers
                 Subject = subject,
                 Body = body,
                 UserId = userId,
-                Created = ticket.Updated.Value,
+                Created = ticket.Updated ?? ticket.Created,
                 ItemType = db.Entry(ticket).Entity.GetType().BaseType.Name,
                 ItemId = ticket.Id.ToString()
             };
