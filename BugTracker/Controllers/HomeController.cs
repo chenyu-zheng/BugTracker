@@ -22,10 +22,10 @@ namespace BugTracker.Controllers
             var user = db.Users.FirstOrDefault(u => u.Id == userId);
             var model = new DashboardViewModel
             {
-                MyProjects = user.Projects.Count(),
-                ProjectsTickets = user.Projects.SelectMany(p => p.Tickets).Count(),
-                AssignedTickets = user.AssignedTickets.Count(),
-                CreatedTickets = user.Tickets.Count()
+                NumberOfMyProjects = user.Projects.Count(),
+                NumberOfProjectsTickets = user.Projects.SelectMany(p => p.Tickets).Count(),
+                NumberOfAssignedTickets = user.AssignedTickets.Count(),
+                NumberOfCreatedTickets = user.Tickets.Count()
             };
             
             var uHelper = new UserManageHelper(db);
@@ -43,12 +43,11 @@ namespace BugTracker.Controllers
                         ticketUpdates.Cast<TicketRevisionViewModel>().ToList())
                         .Cast<TicketUpdateViewModel>().ToList();
 
-                model.NewAssignedTickets = db.Tickets
+                model.AssignedTickets = db.Tickets
                     .Where(t => t.AssigneeId == userId &&
-                        (!t.Revisions.Any() ||
-                            t.Revisions.Any(r => r.Details.Any(d => d.NewValue == userId))))
+                        t.Status.Name == "Assigned")
                     .OrderByDescending(t => t.Updated.HasValue ? t.Updated : t.Created)
-                    .Take(5)
+                    .Take(10)
                     .ProjectTo<TicketViewModel>(MappingConfig.Config)
                     .ToList();
             }

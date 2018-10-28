@@ -25,7 +25,7 @@
                                 <i class="fas fa-folder fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">@Html.DisplayFor(m => m.MyProjects)</div>
+                                <div class="huge">@Html.DisplayFor(m => m.NumberOfMyProjects)</div>
                                 <div>
                                     My Projects
                                 </div>
@@ -53,7 +53,7 @@
                                 <i class="fas fa-file-alt fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">@Html.DisplayFor(m => m.ProjectsTickets)</div>
+                                <div class="huge">@Html.DisplayFor(m => m.NumberOfProjectsTickets)</div>
                                 <div>
                                     From My Projects
                                 </div>
@@ -80,7 +80,7 @@
                                 <i class="fas fa-file-alt fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">@Html.DisplayFor(m => m.AssignedTickets)</div>
+                                <div class="huge">@Html.DisplayFor(m => m.NumberOfAssignedTickets)</div>
                                 <div>
                                     Assigned To Me
                                 </div>
@@ -107,7 +107,7 @@
                                 <i class="fas fa-file-alt fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">@Html.DisplayFor(m => m.CreatedTickets)</div>
+                                <div class="huge">@Html.DisplayFor(m => m.NumberOfCreatedTickets)</div>
                                 <div>
                                     Posted By Me
                                 </div>
@@ -180,17 +180,17 @@
             </div>
         </div>
     }
-    @if (Model.NewAssignedTickets.Any())
+    @if (Model.AssignedTickets.Any())
     {
         <div class="col-lg-6">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    New Assigned Tickets
+                    Assigned Tickets
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group">
-                        @foreach (var item in Model.NewAssignedTickets)
+                        @foreach (var item in Model.AssignedTickets)
                         {
                             <a href="@Url.Action("Details", "Tickets", new { id = item.Id })" class="list-group-item"
                                title="Project: @item.ProjectName &#10;Category: @item.CategoryName &#10;Status: @item.StatusName &#10;Priority: @item.PriorityName">

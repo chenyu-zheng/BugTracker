@@ -7,17 +7,17 @@ namespace BugTracker.ViewModels
 {
     public class DashboardViewModel
     {
-        public int MyProjects { get; set; }
-        public int ProjectsTickets { get; set; }
-        public int AssignedTickets { get; set; }
-        public int CreatedTickets { get; set; }
+        public int NumberOfMyProjects { get; set; }
+        public int NumberOfProjectsTickets { get; set; }
+        public int NumberOfAssignedTickets { get; set; }
+        public int NumberOfCreatedTickets { get; set; }
         public List<TicketUpdateViewModel> TicketUpdates { get; set; }
-        public List<TicketViewModel> NewAssignedTickets { get; set; }
+        public List<TicketViewModel> AssignedTickets { get; set; }
 
         public DashboardViewModel()
         {
             TicketUpdates = new List<TicketUpdateViewModel>();
-            NewAssignedTickets = new List<TicketViewModel>();
+            AssignedTickets = new List<TicketViewModel>();
         }
     }
 
