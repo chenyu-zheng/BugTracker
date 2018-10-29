@@ -25,7 +25,7 @@
                             {
                                 @Html.Raw("Modified Description  ")<a class="collapsible btn btn-link">View Old Content</a>
                                 <div class="content well" style="display: none">
-                                    @Html.Raw(detail.OldValue)
+                                    @Html.RawSafe(detail.OldValue)
                                     <br />
                                 </div>
                             }
