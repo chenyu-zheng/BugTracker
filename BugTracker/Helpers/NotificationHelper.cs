@@ -74,7 +74,7 @@ namespace BugTracker.Helpers
                 Body = body,
                 UserId = userId,
                 Created = ticket.Updated ?? ticket.Created,
-                ItemType = db.Entry(ticket).Entity.GetType().BaseType.Name,
+                ItemType = nameof(Ticket),
                 ItemId = ticket.Id.ToString()
             };
         }
@@ -99,7 +99,7 @@ namespace BugTracker.Helpers
                 Body = body,
                 UserId = userId,
                 Created = ticket.Updated.Value,
-                ItemType = db.Entry(ticket).Entity.GetType().BaseType.Name,
+                ItemType = nameof(Ticket),
                 ItemId = ticket.Id.ToString()
             };
         }
@@ -122,7 +122,7 @@ namespace BugTracker.Helpers
                 Body = body,
                 UserId = userId,
                 Created = comment.Created,
-                ItemType = db.Entry(comment).Entity.GetType().BaseType.Name,
+                ItemType = nameof(Comment),
                 ItemId = comment.Id.ToString()
             };
         }
@@ -145,7 +145,7 @@ namespace BugTracker.Helpers
                 Body = body,
                 UserId = userId,
                 Created = attachment.Created,
-                ItemType = db.Entry(attachment).Entity.GetType().BaseType.Name,
+                ItemType = nameof(Attachment),
                 ItemId = attachment.Id.ToString()
             };
         }
