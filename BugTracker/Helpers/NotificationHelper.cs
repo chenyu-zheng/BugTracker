@@ -25,6 +25,11 @@ namespace BugTracker.Helpers
 
         public async Task Send(Notification notification)
         {
+            if (!(await userManager.IsEmailConfirmedAsync(notification.UserId)))
+            {
+                await Task.FromResult(0);
+            }
+
             try
             {
                 var from = $"Notification<{WebConfigurationManager.AppSettings["emailfrom"]}>";
