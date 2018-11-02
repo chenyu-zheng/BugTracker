@@ -163,24 +163,22 @@ namespace BugTracker.Controllers
         {
             var userId = User.Identity.GetUserId();
             var uHelper = new UserManageHelper(db);
+            var vMHelper = new ViewModelHelper();
 
-            ActionResult modelInvalid()
+            if (!ModelState.IsValid)
             {
-                var vMHelper = new ViewModelHelper();
                 model = vMHelper.AddSelectLists(model, userId);
                 model.CanAssign =
                 uHelper.HasPermission(userId, "Assign All Tickets") || uHelper.HasPermission(userId, "Assign Projects Tickets");
                 return View(model);
             }
-
-            if (!ModelState.IsValid)
-            {
-                return modelInvalid();
-            }
             if (db.Tickets.Any(p => p.Subject == model.Subject))
             {
                 ModelState.AddModelError(nameof(model.Subject), $"The {nameof(model.Subject)} must be unique");
-                return modelInvalid();
+                model = vMHelper.AddSelectLists(model, userId);
+                model.CanAssign =
+                uHelper.HasPermission(userId, "Assign All Tickets") || uHelper.HasPermission(userId, "Assign Projects Tickets");
+                return View(model);
             }
 
             IMapper mapper = new Mapper(MappingConfig.Config);
@@ -254,15 +252,12 @@ namespace BugTracker.Controllers
         [PermissionAuthorize("Edit All Tickets, Edit Projects Tickets, Edit Assigned Tickets, Edit Created Tickets")]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Subject,Description,ProjectId,CategoryId,StatusId,PriorityId,AssigneeId")] EditTicketViewModel model)
         {
-            ActionResult modelInvalid()
-            {
-                var vMHelper = new ViewModelHelper();
-                model = vMHelper.AddSelectLists(model);
-                return View(model);
-            }
+
+            var vMHelper = new ViewModelHelper();
             if (!ModelState.IsValid)
             {
-                return modelInvalid();
+                model = vMHelper.AddSelectLists(model);
+                return View(model);
             }
             var userId = User.Identity.GetUserId();
             var helper = new UserManageHelper();
@@ -274,7 +269,8 @@ namespace BugTracker.Controllers
             if (model.Subject != ticketDb.Subject && db.Tickets.Any(t => t.Subject == model.Subject))
             {
                 ModelState.AddModelError(nameof(model.Subject), $"The {nameof(model.Subject)} must be unique");
-                return modelInvalid();
+                model = vMHelper.AddSelectLists(model);
+                return View(model);
             }
             if (!db.TicketCategories.Any(p => p.Id == model.CategoryId) || // CategoryId doesn't exist
                 !db.TicketPriorities.Any(p => p.Id == model.PriorityId) || // PriorityId doesn't exist
