@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BugTracker.Migrations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,6 +18,11 @@ namespace BugTracker
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // Update database
+            var configuration = new Configuration();
+            var migrator = new System.Data.Entity.Migrations.DbMigrator(configuration);
+            migrator.Update();
 
             // Create Uploads folder
             System.IO.Directory.CreateDirectory(Server.MapPath("~/Uploads"));

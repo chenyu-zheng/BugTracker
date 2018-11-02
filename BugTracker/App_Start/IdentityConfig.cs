@@ -40,10 +40,10 @@ namespace BugTracker
     {
         public async Task SendAsync(MailMessage message)
         {
-            var username = WebConfigurationManager.AppSettings["username"];
-            var password = WebConfigurationManager.AppSettings["password"];
-            var host = WebConfigurationManager.AppSettings["host"];
-            int port = Convert.ToInt32(WebConfigurationManager.AppSettings["port"]);
+            var username = WebConfigurationManager.AppSettings["smtp-username"];
+            var password = WebConfigurationManager.AppSettings["smtp-password"];
+            var host = WebConfigurationManager.AppSettings["smtp-host"];
+            int port = Convert.ToInt32(WebConfigurationManager.AppSettings["smtp-port"]);
             using (var smtp = new SmtpClient()
             {
                 Host = host,

@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using BugTracker.ViewModels;
 using BugTracker.Models;
 using BugTracker.Helpers;
+using System.Web.Configuration;
 
 namespace BugTracker.Controllers
 {
@@ -66,19 +67,19 @@ namespace BugTracker.Controllers
             string userName;
             if (roleName == "Admin")
             {
-                userName = "demo.admin@bugtracker.com";
+                userName = WebConfigurationManager.AppSettings["demo-admin-username"];
             }
             else if (roleName == "Project Manager")
             {
-                userName = "demo.pmanager@bugtracker.com";
+                userName = WebConfigurationManager.AppSettings["demo-pmanager-username"];
             }
             else if (roleName == "Developer")
             {
-                userName = "demo.developer@bugtracker.com";
+                userName = WebConfigurationManager.AppSettings["demo-developer-username"];
             }
             else if (roleName == "Submitter")
             {
-                userName = "demo.submitter@bugtracker.com";
+                userName = WebConfigurationManager.AppSettings["demo-submitter-username"];
             }
             else
             {

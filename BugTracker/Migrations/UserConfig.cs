@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 
 namespace BugTracker.Migrations
 {
@@ -20,114 +21,126 @@ namespace BugTracker.Migrations
         {
             ApplicationUserManager userManager = new ApplicationUserManager(new ApplicationUserStore(context));
 
-            ApplicationUser adminUser = null;
-            if (!context.Users.Any(p => p.UserName == "admin@bugtracker.com"))
-            {
-                adminUser = new ApplicationUser
-                {
-                    UserName = "admin@bugtracker.com",
-                    Email = "admin@bugtracker.com",
-                    DisplayName = "Admin"
-                };
+            ApplicationUser user = null;
+            string userName, displayName, password;
 
-                userManager.Create(adminUser, "bugadmin");
+            // Default admin
+            userName = WebConfigurationManager.AppSettings["admin-username"];
+            displayName = WebConfigurationManager.AppSettings["admin-displayname"];
+            password = WebConfigurationManager.AppSettings["admin-password"];
+            if (!context.Users.Any(p => p.UserName == userName))
+            {
+                user = new ApplicationUser
+                {
+                    UserName = userName,
+                    Email = userName,
+                    DisplayName = displayName
+                };
+                userManager.Create(user, password);
             }
             else
             {
-                adminUser = context.Users.Where(p => p.UserName == "admin@bugtracker.com")
+                user = context.Users.Where(p => p.UserName == userName)
                     .FirstOrDefault();
             }
-            if (!userManager.IsInRole(adminUser.Id, "Admin"))
+            if (!userManager.IsInRole(user.Id, "Admin"))
             {
-                userManager.AddToRole(adminUser.Id, "Admin");
+                userManager.AddToRole(user.Id, "Admin");
             }
 
-            ApplicationUser demoAdmin = null;
-            if (!context.Users.Any(p => p.UserName == "demo.admin@bugtracker.com"))
-            {
-                demoAdmin = new ApplicationUser
-                {
-                    UserName = "demo.admin@bugtracker.com",
-                    Email = "demo.admin@bugtracker.com",
-                    DisplayName = "Demo-Admin"
-                };
 
-                userManager.Create(demoAdmin, "BugTracker-DemoAdmin");
+            // Demo users:
+
+            userName = WebConfigurationManager.AppSettings["demo-admin-username"];
+            displayName = WebConfigurationManager.AppSettings["demo-admin-displayname"];
+            password = WebConfigurationManager.AppSettings["demo-admin-password"];
+            if (!context.Users.Any(p => p.UserName == userName))
+            {
+                user = new ApplicationUser
+                {
+                    UserName = userName,
+                    Email = userName,
+                    DisplayName = displayName
+                };
+                userManager.Create(user, password);
             }
             else
             {
-                demoAdmin = context.Users.Where(p => p.UserName == "demo.admin@bugtracker.com")
+                user = context.Users.Where(p => p.UserName == userName)
                     .FirstOrDefault();
             }
-            if (!userManager.IsInRole(demoAdmin.Id, "Admin"))
+            if (!userManager.IsInRole(user.Id, "Admin"))
             {
-                userManager.AddToRole(demoAdmin.Id, "Admin");
+                userManager.AddToRole(user.Id, "Admin");
             }
 
-            ApplicationUser demoManager = null;
-            if (!context.Users.Any(p => p.UserName == "demo.pmanager@bugtracker.com"))
+            userName = WebConfigurationManager.AppSettings["demo-pmanager-username"];
+            displayName = WebConfigurationManager.AppSettings["demo-pmanager-displayname"];
+            password = WebConfigurationManager.AppSettings["demo-pmanager-password"];
+            if (!context.Users.Any(p => p.UserName == userName))
             {
-                demoManager = new ApplicationUser
+                user = new ApplicationUser
                 {
-                    UserName = "demo.pmanager@bugtracker.com",
-                    Email = "demo.pmanager@bugtracker.com",
-                    DisplayName = "Demo-PManager"
+                    UserName = userName,
+                    Email = userName,
+                    DisplayName = displayName
                 };
-
-                userManager.Create(demoManager, "BugTracker-DemoPManager");
+                userManager.Create(user, password);
             }
             else
             {
-                demoManager = context.Users.Where(p => p.UserName == "demo.pmanager@bugtracker.com")
+                user = context.Users.Where(p => p.UserName == userName)
                     .FirstOrDefault();
             }
-            if (!userManager.IsInRole(demoManager.Id, "Project Manager"))
+            if (!userManager.IsInRole(user.Id, "Project Manager"))
             {
-                userManager.AddToRole(demoManager.Id, "Project Manager");
+                userManager.AddToRole(user.Id, "Project Manager");
             }
 
-            ApplicationUser demoDeveloper = null;
-            if (!context.Users.Any(p => p.UserName == "demo.developer@bugtracker.com"))
+            userName = WebConfigurationManager.AppSettings["demo-developer-username"];
+            displayName = WebConfigurationManager.AppSettings["demo-developer-displayname"];
+            password = WebConfigurationManager.AppSettings["demo-developer-password"];
+            if (!context.Users.Any(p => p.UserName == userName))
             {
-                demoDeveloper = new ApplicationUser
+                user = new ApplicationUser
                 {
-                    UserName = "demo.developer@bugtracker.com",
-                    Email = "demo.developer@bugtracker.com",
-                    DisplayName = "Demo-Developer"
+                    UserName = userName,
+                    Email = userName,
+                    DisplayName = displayName
                 };
-
-                userManager.Create(demoDeveloper, "BugTracker-DemoDeveloper");
+                userManager.Create(user, password);
             }
             else
             {
-                demoDeveloper = context.Users.Where(p => p.UserName == "demo.developer@bugtracker.com")
+                user = context.Users.Where(p => p.UserName == userName)
                     .FirstOrDefault();
             }
-            if (!userManager.IsInRole(demoDeveloper.Id, "Developer"))
+            if (!userManager.IsInRole(user.Id, "Developer"))
             {
-                userManager.AddToRole(demoDeveloper.Id, "Developer");
+                userManager.AddToRole(user.Id, "Developer");
             }
 
-            ApplicationUser demoSubmitter = null;
-            if (!context.Users.Any(p => p.UserName == "demo.submitter@bugtracker.com"))
+            userName = WebConfigurationManager.AppSettings["demo-submitter-username"];
+            displayName = WebConfigurationManager.AppSettings["demo-submitter-displayname"];
+            password = WebConfigurationManager.AppSettings["demo-submitter-password"];
+            if (!context.Users.Any(p => p.UserName == userName))
             {
-                demoSubmitter = new ApplicationUser
+                user = new ApplicationUser
                 {
-                    UserName = "demo.submitter@bugtracker.com",
-                    Email = "demo.submitter@bugtracker.com",
-                    DisplayName = "Demo-Submitter"
+                    UserName = userName,
+                    Email = userName,
+                    DisplayName = displayName
                 };
-
-                userManager.Create(demoSubmitter, "BugTracker-DemoSubmitter");
+                userManager.Create(user, password);
             }
             else
             {
-                demoSubmitter = context.Users.Where(p => p.UserName == "demo.submitter@bugtracker.com")
+                user = context.Users.Where(p => p.UserName == userName)
                     .FirstOrDefault();
             }
-            if (!userManager.IsInRole(demoSubmitter.Id, "Submitter"))
+            if (!userManager.IsInRole(user.Id, "Submitter"))
             {
-                userManager.AddToRole(demoSubmitter.Id, "Submitter");
+                userManager.AddToRole(user.Id, "Submitter");
             }
         }
     }
