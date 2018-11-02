@@ -38,7 +38,7 @@
                                 <div class="form-group">
                                     @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
-                                        @Html.EditorFor(m => m.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.TextAreaFor(m => m.Description, htmlAttributes: new { rows = "8", @class = "form-control" })
                                         @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/tinymce")
+    @*@Scripts.Render("~/bundles/tinymce")
     <script type="text/javascript">
         $(function () {
             tinymce.init({
@@ -102,7 +102,7 @@
                 plugins: ['autoresize', 'code']
             });
         });
-    </script>
+    </script>*@
     @if (Model.CanAssign)
     {
         <script type="text/javascript">
